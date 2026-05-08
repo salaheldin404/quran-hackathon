@@ -9,19 +9,21 @@ datasource db {
 
 model User {
   id                String             @id @default(cuid())
-  email             String             @unique
-  name              String?
-  image             String?
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @updatedAt
-  emailVerified     DateTime?
-  accounts          Account[]
+  qfUserId          String             @unique
+  accessToken       String?
+  refreshToken      String?
+  expiresAt         DateTime?
+  firstName         String?
+  lastName          String?
+  email             String?
   khatmaPlans       KhatmaPlan[]
-  sessions          Session[]
   settings          UserSettings?
   pushSubscriptions PushSubscription[]
   reminders         Reminder[]
   khatmaReminders   KhatmaReminder[]
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
 }
 
 model PushSubscription {
@@ -37,30 +39,30 @@ model PushSubscription {
 }
 
 model Reminder {
-  id         String   @id @default(cuid())
-  userId     String
-  surahId    Int
-  time       String   // Format: "HH:mm"
-  timezone   String   // IANA timezone string, e.g., "America/New_York"
-  days       Int[]    // Array of days (0-6, where 0 is Sunday)
-  isEnabled  Boolean  @default(true)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String   @id @default(cuid())
+  userId    String
+  surahId   Int
+  time      String // Format: "HH:mm"
+  timezone  String // IANA timezone string, e.g., "America/New_York"
+  days      Int[] // Array of days (0-6, where 0 is Sunday)
+  isEnabled Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([time, isEnabled])
 }
 
 model KhatmaReminder {
-  id         String   @id @default(cuid())
-  userId     String   @unique
-  time       String   // Format: "HH:mm"
-  timezone   String   // IANA timezone string, e.g., "America/New_York"
-  isEnabled  Boolean  @default(true)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  time      String // Format: "HH:mm"
+  timezone  String // IANA timezone string, e.g., "America/New_York"
+  isEnabled Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([time, isEnabled])
 }
@@ -86,35 +88,6 @@ model UserSettings {
   user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   wishlistReciters  WishlistReciter[]
   wishlistSurahs    WishlistSurah[]
-
-  @@index([userId])
-}
-
-model Account {
-  id                String  @id @default(uuid())
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String?
-  access_token      String?
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String?
-  session_state     String?
-  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
-  @@index([userId])
-}
-
-model Session {
-  id           String   @id @default(uuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
