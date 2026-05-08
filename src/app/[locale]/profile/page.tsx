@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { getServerSession } from "next-auth";
+import { getSession } from "@/lib/oauth/auth";
 import { redirect } from "next/navigation";
 
 import ProfilePageClient from "@/components/profile/ProfilePageClient";
-import { authOptions } from "@/lib/auth";
+
 import { prisma } from "@/lib/prisma";
 
 export async function generateMetadata({
@@ -34,19 +34,20 @@ export default async function ProfilePage({
   params: Promise<{ locale: "en" | "ar" }>;
 }) {
   const { locale } = await params;
-  const session = await getServerSession(authOptions);
+  const session = await getSession();
 
-  if (!session?.user?.id) {
+  if (!session?.id) {
     redirect(`/${locale}/auth/signin`);
   }
 
   const [user, quranReminders, khatmaReminder] = await prisma.$transaction([
     prisma.user.findUnique({
-      where: { id: session.user.id },
+      where: { id: session.id },
       select: {
-        name: true,
+        firstName: true,
+        lastName: true,
         email: true,
-        image: true,
+
         createdAt: true,
         _count: {
           select: {
@@ -56,11 +57,11 @@ export default async function ProfilePage({
       },
     }),
     prisma.reminder.findMany({
-      where: { userId: session.user.id },
+      where: { userId: session.id },
       orderBy: [{ createdAt: "asc" }, { updatedAt: "asc" }],
     }),
     prisma.khatmaReminder.findUnique({
-      where: { userId: session.user.id },
+      where: { userId: session.id },
     }),
   ]);
 
@@ -71,9 +72,11 @@ export default async function ProfilePage({
   return (
     <ProfilePageClient
       profile={{
-        name: user.name,
+        name:
+          user.firstName && user.lastName
+            ? `${user.firstName} ${user.lastName}`
+            : null,
         email: user.email,
-        image: user.image,
         createdAt: user.createdAt.toISOString(),
         pushDeviceCount: user._count.pushSubscriptions,
       }}

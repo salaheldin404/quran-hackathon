@@ -1,20 +1,12 @@
 "use client";
 
-import { signIn } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
-import { FcGoogle } from "react-icons/fc";
-import { FaHome } from "react-icons/fa";
-import { useState } from "react";
+import { Link as IntlLink } from "@/i18n/navigation";
+import Link from "next/link";
+import { FaHome, FaUserCircle } from "react-icons/fa";
 
 const SignInPage = () => {
   const t = useTranslations("SignIn");
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleGoogleSignIn = async () => {
-    setIsLoading(true);
-    await signIn("google", { callbackUrl: "/" });
-  };
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4">
@@ -48,19 +40,15 @@ const SignInPage = () => {
 
         {/* Sign In Card */}
         <div className="bg-card border border-border rounded-2xl p-6 space-y-5 shadow-sm">
-          {/* Google Button */}
-          <button
-            onClick={handleGoogleSignIn}
-            disabled={isLoading}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3.5 rounded-xl border border-border bg-background hover:bg-secondary font-medium transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          {/* QF Button */}
+          <Link
+            href="/api/auth/login"
+            prefetch={false}
+            className="w-full flex items-center justify-center gap-3 px-4 py-3.5 rounded-xl border border-border bg-background hover:bg-secondary font-medium transition-colors cursor-pointer"
           >
-            {isLoading ? (
-              <div className="w-5 h-5 border-2 border-gray-300 border-t-primary rounded-full animate-spin" />
-            ) : (
-              <FcGoogle className="w-5 h-5" />
-            )}
-            {t("google-button")}
-          </button>
+            <FaUserCircle className="w-5 h-5 text-primary" />
+            Sign in with Quran Foundation
+          </Link>
         </div>
 
         {/* Footer */}
@@ -68,13 +56,13 @@ const SignInPage = () => {
           {/* <p className="text-xs text-gray-400 dark:text-gray-500">
             {t("terms")}
           </p> */}
-          <Link
+          <IntlLink
             href="/"
             className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-primary transition-colors"
           >
             <FaHome className="w-3.5 h-3.5" />
             {t("back-home")}
-          </Link>
+          </IntlLink>
         </div>
       </div>
     </div>
