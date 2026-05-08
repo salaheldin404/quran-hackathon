@@ -1,7 +1,7 @@
-import { getServerSession } from "next-auth";
+import { requireUser } from "@/lib/oauth/auth";
 import { NextResponse } from "next/server";
 
-import { authOptions } from "@/lib/auth";
+
 import { prisma } from "@/lib/prisma";
 import {
   profileReminderSchema,
@@ -41,25 +41,18 @@ function buildReminderData(reminder: QuranReminderInput, timezone: string) {
   };
 }
 
-async function getUserId() {
-  const session = await getServerSession(authOptions);
-  return session?.user?.id;
-}
-
 export async function GET() {
   try {
-    const userId = await getUserId();
-    if (!userId) {
-      return unauthorized();
-    }
+    const user = await requireUser();
+    const userId = user.id;
 
-    const [user, quranReminders, khatmaReminder] = await prisma.$transaction([
+    const [userData, quranReminders, khatmaReminder] = await prisma.$transaction([
       prisma.user.findUnique({
         where: { id: userId },
         select: {
-          name: true,
+          firstName: true,
+          lastName: true,
           email: true,
-          image: true,
           createdAt: true,
           _count: {
             select: {
@@ -77,30 +70,31 @@ export async function GET() {
       }),
     ]);
 
-    if (!user) {
+    if (!userData) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     return NextResponse.json({
       profile: {
-        ...user,
-        createdAt: user.createdAt.toISOString(),
-        pushDeviceCount: user._count.pushSubscriptions,
+        ...userData,
+        createdAt: userData.createdAt.toISOString(),
+        pushDeviceCount: userData._count.pushSubscriptions,
       },
       quranReminders,
       khatmaReminder,
     });
   } catch (error) {
+    if ((error as Error).message === "Unauthorized") {
+      return unauthorized();
+    }
     return serverError(error, "Error loading profile reminder settings");
   }
 }
 
 export async function PUT(request: Request) {
   try {
-    const userId = await getUserId();
-    if (!userId) {
-      return unauthorized();
-    }
+    const user = await requireUser();
+    const userId = user.id;
 
     const payload = await request.json();
     const parseResult = profileReminderSchema.safeParse(payload);
@@ -185,6 +179,9 @@ export async function PUT(request: Request) {
       ...result,
     });
   } catch (error) {
+    if ((error as Error).message === "Unauthorized") {
+      return unauthorized();
+    }
     return serverError(error, "Error saving profile reminder settings");
   }
 }
