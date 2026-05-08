@@ -3,19 +3,19 @@
 import { useEffect, useState, useCallback } from "react";
 import { getToken, onMessage } from "firebase/messaging";
 import { messaging } from "@/lib/firebase/config";
-import { useSession } from "next-auth/react";
+import { useAppSelector } from "@/lib/store/hooks";
 import { toast } from "sonner";
 import { useRouter } from "@/i18n/navigation";
 
 export const useNotifications = () => {
-  const { data: session } = useSession();
+  const { isAuthenticated } = useAppSelector((state) => state.sync);
   const [token, setToken] = useState<string | null>(null);
   const [permission, setPermission] =
     useState<NotificationPermission>("default");
   const router = useRouter();
   const registerToken = useCallback(
     async (fcmToken: string) => {
-      if (!session) return;
+      if (!isAuthenticated) return;
 
       try {
         await fetch("/api/notifications/register", {
@@ -30,7 +30,7 @@ export const useNotifications = () => {
         console.error("Error registering token with backend:", error);
       }
     },
-    [session],
+    [isAuthenticated],
   );
 
   const requestPermission = useCallback(async () => {
@@ -91,7 +91,7 @@ export const useNotifications = () => {
   useEffect(() => {
     const currentMessaging = messaging;
 
-    if (!currentMessaging || permission !== "granted" || token || !session) {
+    if (!currentMessaging || permission !== "granted" || token || !isAuthenticated) {
       return;
     }
 
@@ -121,7 +121,7 @@ export const useNotifications = () => {
     return () => {
       isMounted = false;
     };
-  }, [permission, registerToken, session, token]);
+  }, [permission, registerToken, isAuthenticated, token]);
 
   return { token, permission, requestPermission };
 };

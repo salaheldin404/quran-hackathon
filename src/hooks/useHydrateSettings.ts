@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useSession } from "next-auth/react";
-import { useAppDispatch } from "@/lib/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { hydrateAudio } from "@/lib/store/slices/audio-slice";
 import { hydrateFont } from "@/lib/store/slices/font-slice";
 import { hydrateSurah } from "@/lib/store/slices/surah-slice";
@@ -46,13 +45,13 @@ import {
 // }
 
 export function useHydrateSettings() {
-  const { data: session, status } = useSession();
+  const { user, isAuthenticated } = useAppSelector((state) => state.sync);
   const dispatch = useAppDispatch();
   const hasHydrated = useRef(false);
 
   useEffect(() => {
     // Only hydrate once when user is authenticated
-    if (status === "authenticated" && session?.user && !hasHydrated.current) {
+    if (isAuthenticated && user && !hasHydrated.current) {
       hasHydrated.current = true;
 
       fetch("/api/user/settings")
@@ -122,8 +121,8 @@ export function useHydrateSettings() {
     }
 
     // Reset hydration flag when user logs out
-    if (status === "unauthenticated") {
+    if (!isAuthenticated) {
       hasHydrated.current = false;
     }
-  }, [status, session, dispatch]);
+  }, [isAuthenticated, user, dispatch]);
 }
