@@ -11,7 +11,6 @@ import { findOwnedPlan, updateKhatma } from "@/server/khatma";
 import { toast } from "sonner";
 import { useRouter } from "@/i18n/navigation";
 import { Button } from "../ui/button";
-import { useSession } from "next-auth/react";
 import DotIndicators from "./DotIndicators";
 import ReaderPageHeader from "../surah/ReaderPageHeader";
 import useReaderCarousel from "@/hooks/useReaderCarousel";
@@ -30,7 +29,7 @@ const KhatmaReaderCarousel = ({ start, end }: KhatmaReaderCarouselProps) => {
   const [isSavingBookmark, setIsSavingBookmark] = useState(false);
   const [isUpdatingProgress, setIsUpdatingProgress] = useState(false);
 
-  const { data: session } = useSession();
+  const { user } = useAppSelector((state) => state.sync);
 
   const khatmaId = useAppSelector((state) => state.khatma.khatmaId);
 
@@ -70,7 +69,7 @@ const KhatmaReaderCarousel = ({ start, end }: KhatmaReaderCarouselProps) => {
   );
 
   const handleCompleteReading = async () => {
-    const userId = session?.user?.id;
+    const userId = user?.id;
     if (!userId) {
       toast.error(t("noActiveKhatma"));
       return;

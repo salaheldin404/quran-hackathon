@@ -1,9 +1,9 @@
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { getServerSession } from "next-auth";
+import { getSession } from "@/lib/oauth/auth";
 import { BookOpen } from "lucide-react";
 
-import { authOptions } from "@/lib/auth";
+
 import { getKhatmaPlans } from "@/server/db/khatmaPlan";
 import { KhatmaContent } from "@/components/khatma/KhatmaContent";
 import { KhatmaPlan } from "@/types/khatma";
@@ -96,12 +96,12 @@ export default async function KhatmaPage({
 }) {
   const { locale } = await params;
   const isArabic = locale === "ar";
-  const session = await getServerSession(authOptions);
+  const session = await getSession();
   const t = await getTranslations("Khatma");
 
   // Get plans only if user is authenticated
-  const plans = session?.user?.id
-    ? await getKhatmaPlans(session.user.id)
+  const plans = session?.id
+    ? await getKhatmaPlans(session.id)
     : ([] as KhatmaPlan[]);
   const baseUrl = "https://skinah-streams.vercel.app";
 
