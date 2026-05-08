@@ -1,3 +1,4 @@
+import { getQfOAuthConfig } from "@/lib/oauth/qf";
 import { NextResponse, NextRequest } from "next/server";
 
 // Define a type for our server-side token cache
@@ -13,6 +14,7 @@ let tokenCache: TokenCache = {
 };
 
 async function getAccessToken(): Promise<string | null> {
+  const { clientId, clientSecret, tokenUrl } = getQfOAuthConfig();
   // Return cached token if it's still valid
   if (tokenCache.token && Date.now() < tokenCache.expiresAt) {
     console.log("CACHE: Using server-cached access token.");
@@ -20,20 +22,12 @@ async function getAccessToken(): Promise<string | null> {
   }
 
   // --- Environment-Specific Configuration ---
-  // const isProduction = process.env.NODE_ENV === "production";
 
-  const tokenUrl = "https://oauth2.quran.foundation/oauth2/token";
-  //  "https://prelive-oauth2.quran.foundation/oauth2/token";
-
-  const clientId = process.env.QURAN_CLIENT_ID_PRODUCTION;
-
-  const clientSecret = process.env.QURAN_CLIENT_SECRET_PRODUCTION;
-
-  console.log("Client ID loaded:", !!clientId); // Should log: true
-  console.log("Client Secret loaded:", !!clientSecret); // Should log: true
+  // const tokenUrl = "https://oauth2.quran.foundation/oauth2/token";
+  
   if (!clientId || !clientSecret) {
     console.error(
-      "SERVER_ERROR: Missing client credentials for the current environment."
+      "SERVER_ERROR: Missing client credentials for the current environment.",
     );
     return null;
   }
@@ -74,23 +68,21 @@ async function getAccessToken(): Promise<string | null> {
 
 async function handler(
   req: NextRequest,
-  { params }: { params: Promise<{ slug: string[] }> }
+  { params }: { params: Promise<{ slug: string[] }> },
 ) {
   const { slug } = await params;
   const apiPath = slug.join("/");
-  // const isProduction = process.env.NODE_ENV === "production";
-
-  const clientId = process.env.QURAN_CLIENT_ID_PRODUCTION;
+  const { clientId } = getQfOAuthConfig();
 
   const accessToken = await getAccessToken();
   if (!accessToken) {
     return NextResponse.json(
       { message: "Could not retrieve access token." },
-      { status: 500 }
+      { status: 500 },
     );
   }
-  const baseApiUrl = "https://apis.quran.foundation/content/api/v4/";
-
+  // const baseApiUrl = "https://apis.quran.foundation/content/api/v4/";
+  const baseApiUrl = "https://apis-prelive.quran.foundation/content/api/v4/";
   const queryString = req.nextUrl.search;
 
   const apiUrl = `${baseApiUrl}${apiPath}${queryString}`;
@@ -118,7 +110,7 @@ async function handler(
     console.error("SERVER_PROXY_ERROR:", error);
     return NextResponse.json(
       { message: "An error occurred while proxying the request." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
