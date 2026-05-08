@@ -1,6 +1,6 @@
 "use server";
 
-import { authOptions } from "@/lib/auth";
+
 import { TOTAL_QURAN_PAGES } from "@/lib/constants/khatma";
 import { prisma } from "@/lib/prisma";
 import { calculateDaysAndTarget } from "@/lib/utils/khatma";
@@ -12,7 +12,7 @@ import type {
   KhatmaActionResult,
   UpdateKhatmaPlanData,
 } from "@/types/khatma";
-import { getServerSession } from "next-auth";
+import { getSession } from "@/lib/oauth/auth";
 import { getLocale, getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
 
@@ -20,8 +20,8 @@ import { revalidatePath } from "next/cache";
 
 /** Authenticate and return the user ID, or null. */
 async function getAuthUserId(): Promise<string | null> {
-  const session = await getServerSession(authOptions);
-  return session?.user?.id ?? null;
+  const session = await getSession();
+  return session?.id ?? null;
 }
 
 /** Revalidate khatma-related caches. */

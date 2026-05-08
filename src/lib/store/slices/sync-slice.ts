@@ -7,7 +7,13 @@ export interface SyncState {
   lastSyncedAt: number | null;
   error: string | null;
   pendingChanges: number;
-  isAuthenticated: boolean;   
+  isAuthenticated: boolean;
+  user: {
+    id: string;
+    email: string | null;
+    firstName: string | null;
+    lastName: string | null;
+  } | null;
 }
 
 export const initialState: SyncState = {
@@ -15,8 +21,8 @@ export const initialState: SyncState = {
   lastSyncedAt: null,
   error: null,
   pendingChanges: 0,
-  isAuthenticated: false
-
+  isAuthenticated: false,
+  user: null
 };
 
 const syncSlice = createSlice({
@@ -52,6 +58,10 @@ const syncSlice = createSlice({
     },
     setIsAuthenticated: (state, action: PayloadAction<boolean>) => {
       state.isAuthenticated = action.payload;
+    },
+    setUser: (state, action: PayloadAction<SyncState["user"]>) => {
+      state.user = action.payload;
+      state.isAuthenticated = !!action.payload;
     }
   },
 });
@@ -61,7 +71,8 @@ export const {
   setSyncError,
   incrementPendingChanges,
   resetSync,
-  setIsAuthenticated
+  setIsAuthenticated,
+  setUser
 } = syncSlice.actions;
 
 export const syncReducer = syncSlice.reducer;
