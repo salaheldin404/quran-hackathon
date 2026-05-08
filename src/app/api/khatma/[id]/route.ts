@@ -1,8 +1,8 @@
-import { authOptions } from "@/lib/auth";
+
 import { prisma } from "@/lib/prisma";
 import { calculateDaysAndTarget } from "@/lib/utils/khatma";
 import type { UpdateKhatmaPlanData } from "@/types/khatma";
-import { getServerSession } from "next-auth";
+import { requireUser } from "@/lib/oauth/auth";
 import { getLocale } from "next-intl/server";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
@@ -16,6 +16,9 @@ const notFound = () =>
   NextResponse.json({ error: "Plan not found" }, { status: 404 });
 
 const serverError = (action: string, error: unknown) => {
+  if (error instanceof Error && error.message === "Unauthorized") {
+    return unauthorized();
+  }
   console.error(`Error ${action} khatma plan:`, error);
   return NextResponse.json(
     { error: "Internal Server Error" },
@@ -37,11 +40,10 @@ async function findOwnedPlan(id: string, userId: string) {
 
 export async function GET(request: Request, { params }: RouteContext) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) return unauthorized();
+    const user = await requireUser();
 
     const { id } = await params;
-    const plan = await findOwnedPlan(id, session.user.id);
+    const plan = await findOwnedPlan(id, user.id);
     if (!plan) return notFound();
 
     return NextResponse.json(plan, { status: 200 });
@@ -54,11 +56,10 @@ export async function GET(request: Request, { params }: RouteContext) {
 
 export async function PATCH(request: Request, { params }: RouteContext) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) return unauthorized();
+    const user = await requireUser();
 
     const { id } = await params;
-    const plan = await findOwnedPlan(id, session.user.id);
+    const plan = await findOwnedPlan(id, user.id);
     if (!plan) return notFound();
 
     const body: UpdateKhatmaPlanData = await request.json();
@@ -109,11 +110,10 @@ export async function PATCH(request: Request, { params }: RouteContext) {
 
 export async function DELETE(request: Request, { params }: RouteContext) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) return unauthorized();
+    const user = await requireUser();
 
     const { id } = await params;
-    const plan = await findOwnedPlan(id, session.user.id);
+    const plan = await findOwnedPlan(id, user.id);
     if (!plan) return notFound();
 
     await prisma.khatmaPlan.delete({ where: { id } });
