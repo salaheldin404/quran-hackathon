@@ -9,7 +9,7 @@ export const chaptersApi = newVersionApiSlice.injectEndpoints({
       query: (id) => `/chapters/${id}`,
     }),
     getChapterInfo: builder.query({
-      query: (id) => `/chapters/${id}/info`,
+      query: ({id,params} : { id: number; params?: string }) => `/chapters/${id}/info?${params}`,
     }),
   }),
 });

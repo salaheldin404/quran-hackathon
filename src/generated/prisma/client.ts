@@ -65,16 +65,6 @@ export type KhatmaReminder = Prisma.KhatmaReminderModel
  */
 export type UserSettings = Prisma.UserSettingsModel
 /**
- * Model Account
- * 
- */
-export type Account = Prisma.AccountModel
-/**
- * Model Session
- * 
- */
-export type Session = Prisma.SessionModel
-/**
  * Model WishlistSurah
  * 
  */

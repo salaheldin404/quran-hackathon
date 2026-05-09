@@ -1,6 +1,5 @@
 import createMiddleware from "next-intl/middleware";
 import { NextRequest, NextResponse } from "next/server";
-import { withAuth } from "next-auth/middleware";
 
 const intlMiddleware = createMiddleware({
   locales: ["en", "ar"],
@@ -8,51 +7,71 @@ const intlMiddleware = createMiddleware({
   localeDetection: false,
 });
 
-// Auth pages that authenticated users should not access
+const encoder = new TextEncoder();
+const SECRET = process.env.SESSION_SECRET!;
+
+async function sign(data: string) {
+  const key = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(SECRET),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+
+  const signature = await crypto.subtle.sign("HMAC", key, encoder.encode(data));
+
+  return btoa(String.fromCharCode(...new Uint8Array(signature)))
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
+}
+async function verifySession(token?: string) {
+  if (!token) return false;
+
+  const [payload, sig] = token.split(".");
+  if (!payload || !sig) return false;
+
+  const expected = await sign(payload);
+  if (sig !== expected) return false;
+
+  const data = JSON.parse(atob(payload));
+  if (data.exp < Date.now()) return false;
+
+  return true;
+}
+
+const PROTECTED_PATHS = ["/khatma", "/profile"];
 const AUTH_PAGES = ["/auth/signin", "/auth/error"];
+export default async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
 
-// Protected pages that require authentication
-const PROTECTED_PAGES = ["/khatma", "/KhatmaReaderPage"];
+  // Simplified public check for multilingual
+  const pathWithoutLocale = pathname.replace(/^\/(en|ar)/, "") || "/";
+  const isProtectedPath = PROTECTED_PATHS.some((path) =>
+    pathWithoutLocale.startsWith(path),
+  );
+  const isAuthPage = AUTH_PAGES.some((page) =>
+    pathWithoutLocale.startsWith(page),
+  );
+  const session = req.cookies.get("session")?.value;
+  const isValidSession = await verifySession(session);
 
-export default withAuth(
-  async function middleware(request: NextRequest) {
-    const { pathname } = request.nextUrl;
-    const locale = pathname.split("/")[1] || "ar";
-    const pathWithoutLocale = pathname.replace(`/${locale}`, "") || "/";
+  if (isAuthPage && isValidSession) {
+    return NextResponse.redirect(new URL("/", req.url));
+  }
+  if (!isProtectedPath) {
+    return intlMiddleware(req);
+  }
 
-    // Get user session
-    const isAuthenticated =
-      !!request.cookies.get("next-auth.session-token") ||
-      !!request.cookies.get("__Secure-next-auth.session-token");
-    const isAuthPage = AUTH_PAGES.some((page) =>
-      pathWithoutLocale.startsWith(page),
-    );
+  if (!isValidSession) {
+    const loginUrl = new URL(`/api/auth/login`, req.url);
+    return NextResponse.redirect(loginUrl);
+  }
 
-    const isProtectedPage = PROTECTED_PAGES.some((page) =>
-      pathWithoutLocale.startsWith(page),
-    );
+  return intlMiddleware(req);
+}
 
-    // Redirect authenticated users away from auth pages
-    if (isAuthPage && isAuthenticated) {
-      return NextResponse.redirect(new URL(`/${locale}`, request.url));
-    }
-
-    // Redirect unauthenticated users away from protected pages
-    if (isProtectedPage && !isAuthenticated) {
-      const signInUrl = new URL(`/${locale}/auth/signin`, request.url);
-      signInUrl.searchParams.set("callbackUrl", pathname);
-      return NextResponse.redirect(signInUrl);
-    }
-
-    // Apply internationalization middleware
-    return intlMiddleware(request);
-  },
-  {
-    callbacks: {
-      authorized: () => true, // Handle auth checks in the middleware function above
-    },
-  },
-);
 
 export const config = {
   matcher: "/((?!api|trpc|_next|_vercel|sitemap\\.xml|robots\\.txt|.*\\..*).*)",

@@ -79,6 +79,7 @@ const SurahClientPage = ({ initialSurah, locale }: SurahClientPageProps) => {
       refetchOnMountOrArgChange: true,
     },
   );
+
   const { handleNextSurah, handlePreviousSurah, navigationState } =
     useSurahNavigation(numericId);
 
@@ -86,6 +87,7 @@ const SurahClientPage = ({ initialSurah, locale }: SurahClientPageProps) => {
     () => Object.keys(groupedVerses),
     [groupedVerses],
   );
+
   const {
     emblaRef: readingCarouselRef,
     emblaApi: readingCarouselApi,
@@ -232,7 +234,10 @@ const SurahClientPage = ({ initialSurah, locale }: SurahClientPageProps) => {
             {isFetching ? (
               <VersesLoadingSkeleton />
             ) : (
-              <div dir={isRTL ? "rtl" : "ltr"} className="mt-6 overflow-hidden rounded-md rounded-t-xl border border-border/40 dark:bg-card/40">
+              <div
+                dir={isRTL ? "rtl" : "ltr"}
+                className="mt-6 overflow-hidden rounded-md rounded-t-xl border border-border/40 dark:bg-card/40"
+              >
                 <ReaderPageHeader
                   bookmarkLabel={t2("save-mark")}
                   canGoNext={canClickVisualLeft}
@@ -250,71 +255,6 @@ const SurahClientPage = ({ initialSurah, locale }: SurahClientPageProps) => {
                   }
                   totalItemsLabel={String(totalReaderLabel)}
                 />
-                {/* <div className="flex items-center justify-between gap-3 border-b border-border/40 bg-background/80 px-3 py-2.5 backdrop-blur sm:px-4">
-                  <div className="hidden md:flex  items-center gap-1.5">
-                    <NavButton
-                      onClick={handleVisualLeft}
-                      disabled={!canClickVisualLeft}
-                      direction="next"
-                    />
-                    <NavButton
-                      onClick={handleVisualRight}
-                      disabled={!canClickVisualRight}
-                      direction="prev"
-                    />
-                  </div>
-
-                  <div className="flex md:hidden items-center gap-1">
-                    <MobileNavButton
-                      onClick={handleVisualLeft}
-                      disabled={!canClickVisualLeft}
-                      ariaLabel="Previous"
-                    >
-                      <ChevronRight className="w-4 h-4" />
-                    </MobileNavButton>
-                    <MobileNavButton
-                      onClick={handleVisualRight}
-                      disabled={!canClickVisualRight}
-                      ariaLabel="Next"
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                    </MobileNavButton>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={handleSaveMark}
-                      disabled={!currentPageAnchorVerse}
-                      className={`grid h-8 w-8 cursor-pointer place-content-center rounded-md transition-colors disabled:cursor-not-allowed disabled:opacity-30 ${
-                        isCurrentPageSaved
-                          ? "bg-primary/10 text-primary"
-                          : "text-muted-foreground hover:bg-secondary"
-                      }`}
-                      aria-label={t2("save-mark")}
-                      aria-pressed={isCurrentPageSaved}
-                    >
-                      <LuBookmark
-                        className={`h-4 w-4 ${
-                          isCurrentPageSaved ? "fill-current" : ""
-                        }`}
-                      />
-                    </button>
-                    <p className="font-cairo text-sm font-medium text-foreground/80">
-                      {locale === "ar"
-                        ? `صفحة ${currentReaderPageLabel}`
-                        : `Page ${currentReaderPageLabel}`}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Setting />
-
-                    <span className="rounded-full bg-primary/10 px-2.5 py-1 font-cairo text-xs font-semibold text-primary">
-                      {selectedReaderLabel}
-                      <span className="mx-1 text-primary/50">/</span>
-                      {totalReaderLabel}
-                    </span>
-                  </div>
-                </div> */}
 
                 <div className="h-[calc(100dvh-12rem)]  max-h-[900px] ">
                   <div

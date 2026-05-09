@@ -9,26 +9,19 @@ import Navbar from "@/components/header/Navbar";
 import NextTopLoader from "nextjs-toploader";
 
 import StoreProvider from "@/lib/store/StoreProvider";
-import AuthProvider from "@/components/AuthProvider";
-// import SettingsHydrator from "@/components/SettingsHydrator";
-
 import PlayerWrapper from "@/components/audio/PlayerWrapper";
 import { Toaster } from "@/components/ui/sonner";
 
 import SettingsHydrator from "@/components/SettingsHydrator";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { getSession } from "@/lib/oauth/auth";
+
 import { getKhatmaPlan } from "@/server/db/khatmaPlan";
 import PWAInstallPrompt from "@/components/pwa/PWAInstallPrompt";
-// const notoNaskh = Noto_Naskh_Arabic({
-//   subsets: ["arabic"],
-//   weight: ["400", "500", "600", "700"], // Choose the weights you need
-//   variable: "--font-noto-naskh", // The CSS variable we'll use in Tailwind
-// });
+
 const cairo = Cairo({
   subsets: ["arabic"],
-  weight: ["400", "500", "600", "700"], // Choose the weights you need
-  variable: "--font-cairo", // The CSS variable we'll use in Tailwind
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-cairo",
 });
 
 const tajawal = Tajawal({
@@ -36,12 +29,6 @@ const tajawal = Tajawal({
   weight: ["300", "400", "500", "700"],
   variable: "--font-tajawal",
 });
-
-// const amiri = Amiri_Quran({
-//   subsets: ["arabic"],
-//   weight: ["400"], // Choose the weights you need
-//   variable: "--font-amiri", // The CSS variable we'll use in Tailwind
-// });
 
 export function generateStaticParams(): { locale: "en" | "ar" }[] {
   return [{ locale: "en" }, { locale: "ar" }];
@@ -178,11 +165,11 @@ export default async function RootLayout({
   params: Promise<{ locale: string }>;
 }>) {
   const { locale } = (await params) as { locale: "en" | "ar" };
-  const initialSession = await getServerSession(authOptions);
+  const user = await getSession();
   let initialkhatma = null;
 
-  if (initialSession?.user?.id) {
-    initialkhatma = await getKhatmaPlan(initialSession.user.id);
+  if (user?.id) {
+    initialkhatma = await getKhatmaPlan(user.id);
   }
   const jsonLd = {
     "@context": "https://schema.org",
@@ -205,29 +192,39 @@ export default async function RootLayout({
       <body
         className={`${cairo.variable} ${tajawal.variable} dark:bg-background bg-gray-100`}
       >
-        <AuthProvider session={initialSession}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <NextTopLoader color="#7c3aed" showSpinner={false} />
+          <StoreProvider
+            initialKhatma={initialkhatma}
+            user={
+              user
+                ? {
+                    id: user.id,
+                    email: user.email,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                  }
+                : null
+            }
           >
-            <NextTopLoader color="#7c3aed" showSpinner={false} />
-            <StoreProvider initialKhatma={initialkhatma}>
-              <SettingsHydrator>
-                <NextIntlClientProvider locale={locale}>
-                  <Navbar />
-                  {children}
-                  {modal}
-                  {khatma}
-                  <PWAInstallPrompt />
-                  <PlayerWrapper />
-                </NextIntlClientProvider>
-              </SettingsHydrator>
-            </StoreProvider>
-            <Toaster richColors />
-          </ThemeProvider>
-        </AuthProvider>
+            <SettingsHydrator>
+              <NextIntlClientProvider locale={locale}>
+                <Navbar />
+                {children}
+                {modal}
+                {khatma}
+                <PWAInstallPrompt />
+                <PlayerWrapper />
+              </NextIntlClientProvider>
+            </SettingsHydrator>
+          </StoreProvider>
+          <Toaster richColors />
+        </ThemeProvider>
       </body>
     </html>
   );

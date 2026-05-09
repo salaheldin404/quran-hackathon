@@ -1,8 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { signOut, useSession } from "next-auth/react";
-import { Loader2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,51 +9,34 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useAppDispatch } from "@/lib/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { resetToDefaultState } from "@/lib/store/root-actions";
 import { cancelPendingSave } from "@/lib/store/store";
 import { useCallback } from "react";
 import { Link } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { UserRound } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const AuthButton = () => {
-  const { data: session, status } = useSession();
+  const { user, isAuthenticated } = useAppSelector((state) => state.sync);
   const dispatch = useAppDispatch();
   const locale = useLocale();
   const t = useTranslations("AuthButton");
+  const router = useRouter();
 
-  const handleLogout = useCallback(() => {
-    // 1. Cancel any pending debounced save to prevent stale data
-    //    from being written to the DB after sign-out.
+  const handleLogout = useCallback(async () => {
     cancelPendingSave();
-
-    // 2. Clear localStorage so the next guest session starts fresh.
     localStorage.removeItem("userSettings");
-
-    // 3. Reset Redux store to initial defaults.
     dispatch(resetToDefaultState());
+    
+    await fetch("/api/auth/logout");
+    router.refresh();
+    router.push("/");
+  }, [dispatch, router]);
 
-    // 4. Sign out via NextAuth (redirects to "/").
-    signOut({ callbackUrl: "/" });
-  }, [dispatch]);
-
-  if (status === "loading") {
-    return (
-      <Button
-        variant="ghost"
-        size="icon"
-        disabled
-        className="h-8 w-8 rounded-full"
-        aria-label="Loading..."
-      >
-        <Loader2 className="h-4 w-4 animate-spin" />
-      </Button>
-    );
-  }
-
-  if (status === "authenticated" && session?.user) {
-    const { user } = session;
+  if (isAuthenticated && user) {
+    const displayName = user.firstName || user.email || "User";
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -69,9 +50,9 @@ const AuthButton = () => {
             aria-label="User menu"
           >
             <Avatar className="h-8 w-8 border-2 border-transparent hover:border-primary/20 transition-colors">
-              <AvatarImage src={user.image || ""} alt={user.name || "User"} />
+              <AvatarImage src={""} alt={displayName} />
               <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-                {user.name?.[0]?.toUpperCase() || "U"}
+                {displayName[0]?.toUpperCase() || "U"}
               </AvatarFallback>
             </Avatar>
           </Button>

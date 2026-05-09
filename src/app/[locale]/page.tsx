@@ -5,8 +5,8 @@ import QuickAccess from "@/components/home/quickAccess/index";
 import RandomAyah from "@/components/home/RandomAyah";
 import RecentlyPlayed from "@/components/home/RecentlyPlayed";
 import Reciters from "@/components/home/Reciters";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { getSession } from "@/lib/oauth/auth";
+
 import { getKhatmaPlan } from "@/server/db/khatmaPlan";
 import { KhatmaPlan } from "@/types/khatma";
 import NotificationPermissionRequest from "@/components/notifications/NotificationPermissionRequest";
@@ -116,9 +116,9 @@ export default async function Home({
     sameAs: [],
   };
   let khatma: KhatmaPlan | null = null;
-  const session = await getServerSession(authOptions);
-  if (session?.user?.id) {
-    const plan = await getKhatmaPlan(session.user.id);
+  const session = await getSession();
+  if (session?.id) {
+    const plan = await getKhatmaPlan(session.id);
     khatma = plan;
   }
   return (

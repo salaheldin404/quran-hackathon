@@ -1,6 +1,6 @@
 import { Prisma } from "@/generated/prisma/client";
 import { InputJsonValue } from "@/generated/prisma/internal/prismaNamespaceBrowser";
-import { authOptions } from "@/lib/auth";
+
 import { prisma } from "@/lib/prisma";
 import { transformDBToResponse } from "@/lib/utils/setting";
 import { ValidationError } from "@/server/errors/ValidationError";
@@ -12,18 +12,15 @@ import {
   UserSettingsDB,
 } from "@/types/settings";
 import { WishlistReciterDB, WishlistSurahDB } from "@/types/wishlist";
-import { getServerSession } from "next-auth";
+import { requireUser } from "@/lib/oauth/auth";
 import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const user = await requireUser();
 
     const settings = await prisma.userSettings.findUnique({
-      where: { userId: session.user.id },
+      where: { userId: user.id },
       include: {
         wishlistSurahs: {
           orderBy: { createdAt: "desc" },
@@ -52,17 +49,17 @@ export async function GET() {
     );
 
     return NextResponse.json(response, { status: 200 });
-  } catch {
+  } catch (error) {
+    if ((error as Error).message === "Unauthorized") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     return NextResponse.json("Internal Server Error", { status: 500 });
   }
 }
 
 export async function PATCH(request: Request) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const user = await requireUser();
 
     const data: DatabaseState = await request.json();
     // Validate all fields
@@ -89,9 +86,9 @@ export async function PATCH(request: Request) {
     await prisma.$transaction(
       async (tx) => {
         const settings = await tx.userSettings.upsert({
-          where: { userId: session.user.id },
+          where: { userId: user.id },
           create: {
-            userId: session.user.id,
+            userId: user.id,
             ...settingsPayload,
           },
           update: {
@@ -192,6 +189,9 @@ export async function PATCH(request: Request) {
 
     return NextResponse.json("Settings updated", { status: 200 });
   } catch (error) {
+    if ((error as Error).message === "Unauthorized") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     if (error instanceof ValidationError) {
       return NextResponse.json(error.message, { status: 400 });
     }

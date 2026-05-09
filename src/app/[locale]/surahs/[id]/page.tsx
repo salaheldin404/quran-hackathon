@@ -111,7 +111,7 @@ const SurahPage = async ({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <SurahClientPage initialSurah={surah} locale={locale} />;
+      <SurahClientPage initialSurah={surah} locale={locale} />
     </>
   );
 };

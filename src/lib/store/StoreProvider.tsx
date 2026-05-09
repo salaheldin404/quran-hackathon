@@ -6,25 +6,20 @@ import { ReactNode, useEffect } from "react";
 import { KhatmaPlan } from "@/types/khatma";
 import { setKhatmaData } from "./slices/khatma-slice";
 import { getKhatmaRange } from "../utils/khatma";
-import { useSession } from "next-auth/react";
-import { setIsAuthenticated } from "./slices/sync-slice";
+import { setUser } from "./slices/sync-slice";
 
 const StoreProvider = ({
   children,
   initialKhatma,
+  user,
 }: {
   children: ReactNode;
   initialKhatma: KhatmaPlan | null;
+  user: { id: string; email: string | null; firstName: string | null; lastName: string | null } | null;
 }) => {
-  const session = useSession();
-
   useEffect(() => {
-    if (session.status === "authenticated") {
-      store.dispatch(setIsAuthenticated(true));
-    } else {
-      store.dispatch(setIsAuthenticated(false));
-    }
-  }, [session.status]);
+    store.dispatch(setUser(user));
+  }, [user]);
   useEffect(() => {
     if (initialKhatma) {
       const range = getKhatmaRange(

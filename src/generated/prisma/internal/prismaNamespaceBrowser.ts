@@ -56,8 +56,6 @@ export const ModelName = {
   Reminder: 'Reminder',
   KhatmaReminder: 'KhatmaReminder',
   UserSettings: 'UserSettings',
-  Account: 'Account',
-  Session: 'Session',
   WishlistSurah: 'WishlistSurah',
   WishlistReciter: 'WishlistReciter',
   PlayHistory: 'PlayHistory',
@@ -82,12 +80,15 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 
 export const UserScalarFieldEnum = {
   id: 'id',
+  qfUserId: 'qfUserId',
+  accessToken: 'accessToken',
+  refreshToken: 'refreshToken',
+  expiresAt: 'expiresAt',
+  firstName: 'firstName',
+  lastName: 'lastName',
   email: 'email',
-  name: 'name',
-  image: 'image',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  emailVerified: 'emailVerified'
+  updatedAt: 'updatedAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -153,34 +154,6 @@ export const UserSettingsScalarFieldEnum = {
 } as const
 
 export type UserSettingsScalarFieldEnum = (typeof UserSettingsScalarFieldEnum)[keyof typeof UserSettingsScalarFieldEnum]
-
-
-export const AccountScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  type: 'type',
-  provider: 'provider',
-  providerAccountId: 'providerAccountId',
-  refresh_token: 'refresh_token',
-  access_token: 'access_token',
-  expires_at: 'expires_at',
-  token_type: 'token_type',
-  scope: 'scope',
-  id_token: 'id_token',
-  session_state: 'session_state'
-} as const
-
-export type AccountScalarFieldEnum = (typeof AccountScalarFieldEnum)[keyof typeof AccountScalarFieldEnum]
-
-
-export const SessionScalarFieldEnum = {
-  id: 'id',
-  sessionToken: 'sessionToken',
-  userId: 'userId',
-  expires: 'expires'
-} as const
-
-export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
 
 
 export const WishlistSurahScalarFieldEnum = {

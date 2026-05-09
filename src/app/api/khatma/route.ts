@@ -1,9 +1,9 @@
-import { authOptions } from "@/lib/auth";
+
 import { TOTAL_QURAN_PAGES } from "@/lib/constants/khatma";
 import { prisma } from "@/lib/prisma";
 import { calculateDaysAndTarget } from "@/lib/utils/khatma";
 import { getKhatmaSchema } from "@/lib/validations/khatmaSchema";
-import { getServerSession } from "next-auth";
+import { requireUser } from "@/lib/oauth/auth";
 import { getLocale, getTranslations } from "next-intl/server";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
@@ -12,6 +12,9 @@ const unauthorized = () =>
   NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
 const serverError = (action: string, error: unknown) => {
+  if (error instanceof Error && error.message === "Unauthorized") {
+    return unauthorized();
+  }
   console.error(`Error ${action} khatma plan:`, error);
   return NextResponse.json(
     { error: "Internal Server Error" },
@@ -21,11 +24,10 @@ const serverError = (action: string, error: unknown) => {
 
 export async function GET() {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) return unauthorized();
+    const user = await requireUser();
 
     const plans = await prisma.khatmaPlan.findMany({
-      where: { userId: session.user.id },
+      where: { userId: user.id },
       orderBy: [{ isActive: "desc" }, { createdAt: "desc" }],
     });
 
@@ -39,12 +41,11 @@ export async function POST(request: Request) {
   try {
     const locale = await getLocale();
     const t = await getTranslations({ locale, namespace: "KhatmaValidation" });
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) return unauthorized();
+    const user = await requireUser();
 
     // Only one plan allowed at a time
     const existing = await prisma.khatmaPlan.findFirst({
-      where: { userId: session.user.id },
+      where: { userId: user.id },
     });
     if (existing) {
       return NextResponse.json(
@@ -69,7 +70,7 @@ export async function POST(request: Request) {
 
     const newPlan = await prisma.khatmaPlan.create({
       data: {
-        userId: session.user.id,
+        userId: user.id,
         pagesPerDay,
         totalPages: TOTAL_QURAN_PAGES,
         startDate,

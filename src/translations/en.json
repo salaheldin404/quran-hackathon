@@ -461,5 +461,39 @@
       "quranDuplicate": "Choose a different Surah for each reminder.",
       "khatmaTime": "Choose a time for the Khatma reminder."
     }
+  },
+  "QuranicGalaxy": {
+    "GalaxySurahDetails": {
+      "surah": "Surah",
+      "verses": "Verses",
+      "type": "Type",
+      "shortName": "Short Name",
+      "about": "About this Surah",
+      "resources": "Additional Resources",
+      "close": "Close",
+      "readSurah": "Read Surah",
+      "meccan": "Meccan",
+      "medinan": "Medinan",
+      "loading_chapter_info": "Loading chapter information...",
+      "order": "Revelation Order",
+      "notes": "Notes",
+      "addNote": "Add Note",
+      "editNote": "Edit Note",
+      "deleteNote": "Delete Note",
+      "notePlaceholder": "Write your note here...",
+      "noNotes": "No notes for this Surah yet.",
+      "save": "Save",
+      "cancel": "Cancel",
+      "confirmDelete": "Are you sure you want to delete this note?"
+    },
+    "Header": {
+      "title": "Quranic Galaxy",
+      "description": "Click on a star to explore its Surah details. Each star represents a Surah of the Quran."
+    },
+    "Search": {
+      "placeholder": "Search for a Surah...",
+      "no_results": "No results found",
+      "verses": "verses"
+    }
   }
 }

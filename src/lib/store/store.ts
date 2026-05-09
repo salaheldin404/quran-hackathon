@@ -59,6 +59,7 @@ import { transformReduxToDB } from "../utils/setting";
 import { resetToDefaultState } from "./root-actions";
 
 import khatmaReducer from "./slices/khatma-slice";
+import { qfApiSlice } from "./services/qfApiSlice";
 // Constants
 const isBrowser = typeof window !== "undefined";
 
@@ -76,6 +77,7 @@ const ATHKAR_KEYS = [
 const appReducer = combineReducers({
   [apiSlice.reducerPath]: apiSlice.reducer,
   [newVersionApiSlice.reducerPath]: newVersionApiSlice.reducer,
+  [qfApiSlice.reducerPath]: qfApiSlice.reducer,
   audio: audioReducer,
   font: fontReducer,
   surah: surahReducer,
@@ -283,6 +285,7 @@ export const makeStore = () =>
       getDefaultMiddleware({ serializableCheck: false })
         .concat(apiSlice.middleware)
         .concat(newVersionApiSlice.middleware)
+        .concat(qfApiSlice.middleware)
         .prepend(listenerMiddleware.middleware),
     // devTools: process.env.NODE_ENV !== "production",
   });

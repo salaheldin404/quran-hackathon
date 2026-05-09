@@ -10,12 +10,16 @@ import { useLocale } from "next-intl";
 import NewSearch from "./NewSearch";
 import { Badge } from "../ui/badge";
 import { useNotifications } from "@/hooks/useNotifications";
+import { usePathname } from "@/i18n/navigation";
 
 const Navbar = () => {
   const scrollDirection = useScrollDirection();
   const locale = useLocale();
+  const pathname = usePathname();
   const isRTL = locale === "ar";
   useNotifications();
+  console.log('pathname:', pathname);
+  if (pathname === "/quranicGalaxy") return null;
   return (
     <header
       className={`${scrollDirection === "down" ? "-top-20 md:-top-24" : "top-0"}
