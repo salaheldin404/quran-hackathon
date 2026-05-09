@@ -1,7 +1,7 @@
 export type ProfileSummary = {
   name: string | null;
   email: string;
-  image: string | null;
+  image?: string | null;
   createdAt: string;
   pushDeviceCount: number;
 };
