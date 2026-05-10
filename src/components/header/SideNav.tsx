@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/sheet";
 import { useLocale, useTranslations } from "next-intl";
 import { FaBars, FaPrayingHands } from "react-icons/fa";
+import { TbGalaxy } from "react-icons/tb";
 
 import { LuX } from "react-icons/lu";
 import { IoHome } from "react-icons/io5";
@@ -28,6 +29,11 @@ const LINKS = [
     title: "home",
     href: "/",
     icon: IoHome,
+  },
+  {
+    title: "profile",
+    href: "/profile",
+    icon: UserRound,
   },
   {
     title: "favorites",
@@ -49,16 +55,17 @@ const LINKS = [
     href: "/khatma",
     icon: BookOpen,
   },
-  {
-    title: "profile",
-    href: "/profile",
-    icon: UserRound,
-  },
+ 
   {
     title: "hisn-muslim",
     href: "/hisn-muslim",
     icon: FaPrayingHands,
   },
+  {
+    "title": "quranic-galaxy",
+    "href": "/quranicGalaxy",
+    "icon": TbGalaxy,
+  }
 ];
 
 const SideNav = () => {
