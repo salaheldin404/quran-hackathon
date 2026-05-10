@@ -110,9 +110,12 @@ export function milkyWayPositions(rotations: number): Point[] {
 }
 
 // ─── Colour palette ───────────────────────────────────────────────────────────
-const MECCAN_COLORS = ["#FFD700", "#FFA500", "#FFB6C1", "#E0B4FF", "#FFFACD"];
-const MEDINAN_COLORS = ["#00BFFF", "#7FFFD4", "#B0E0E6", "#87CEEB", "#ADD8E6"];
 
+// Meccan: Warm, earthy mid-tones (Muted Gold, Copper, Dusty Rose, Muted Plum, Sand)
+const MECCAN_COLORS = ["#CAA34D", "#D97B4B", "#D17B88", "#A57C9B", "#C2B280"];
+
+// Medinan: Cool, oceanic mid-tones (Steel Blue, Muted Teal, Cadet Blue, Muted Sky, Slate)
+const MEDINAN_COLORS = ["#528EB8", "#4EA699", "#76A5AF", "#6897BB", "#819EAD"];
 export const galaxySurahs = quranData.data.map((surah, i) => {
   const isMeccan = surah.revelationType === "Meccan";
   const palette = isMeccan ? MECCAN_COLORS : MEDINAN_COLORS;
