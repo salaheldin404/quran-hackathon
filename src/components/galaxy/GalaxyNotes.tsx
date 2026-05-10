@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import {
-  useGetAllNotesQuery,
   useAddNoteMutation,
   useUpdateNoteMutation,
   useDeleteNoteMutation,
@@ -17,7 +16,7 @@ import {
   Pencil,
   Trash2,
   Save,
-  X,
+ 
   StickyNote,
   Loader2,
   AlertCircle,
@@ -43,7 +42,7 @@ interface GalaxyNotesProps {
 }
 
 const GalaxyNotes = ({ surah, color }: GalaxyNotesProps) => {
-  const t = useTranslations("QuranicGalaxy.GalaxySurahDetails");
+  const t = useTranslations("QuranicGalaxy.NoteEditor");
   const locale = useLocale();
   const isArabic = locale === "ar";
 
@@ -54,7 +53,12 @@ const GalaxyNotes = ({ surah, color }: GalaxyNotesProps) => {
   const [isAdding, setIsAdding] = useState(false);
   const range = `${surah.number}:1-${surah.number}:${surah.numberOfAyahs}`;
   // Filter notes by Surah number using ranges
-  const { data: notes = [], isLoading } = useGetNoteByVerseQuery(range);
+  const { data: notes = [], isLoading } = useGetNoteByVerseQuery(
+    `${surah.number}:1`,
+    {
+      refetchOnMountOrArgChange: true,
+    }
+  );
 
   const [addNote, { isLoading: isAddingNote }] = useAddNoteMutation();
   const [updateNote, { isLoading: isUpdatingNote }] = useUpdateNoteMutation();
@@ -67,16 +71,17 @@ const GalaxyNotes = ({ surah, color }: GalaxyNotesProps) => {
       await addNote({
         body: newNoteBody,
         saveToQR: false,
-        ranges : [range],
+        ranges: [range],
       }).unwrap();
 
       setNewNoteBody("");
       setIsAdding(false);
       toast.success(
-        isArabic ? "تمت إضافة الملاحظة بنجاح" : "Note added successfully",
+       t("addSuccess") 
       );
     } catch (error) {
-      toast.error(isArabic ? "فشل في إضافة الملاحظة" : "Failed to add note");
+      console.log(error,'error from add note');
+      toast.error(t("addError"));
     }
   };
 
@@ -92,10 +97,11 @@ const GalaxyNotes = ({ surah, color }: GalaxyNotesProps) => {
       setEditingNoteId(null);
       setEditBody("");
       toast.success(
-        isArabic ? "تم تحديث الملاحظة بنجاح" : "Note updated successfully",
+        t("editSuccess")
       );
     } catch (error) {
-      toast.error(isArabic ? "فشل في تحديث الملاحظة" : "Failed to update note");
+      console.log(error,'error from update note');
+      toast.error(t("editError"));
     }
   };
 
@@ -106,10 +112,11 @@ const GalaxyNotes = ({ surah, color }: GalaxyNotesProps) => {
       await deleteNote(noteToDelete).unwrap();
       setNoteToDelete(null);
       toast.success(
-        isArabic ? "تم حذف الملاحظة بنجاح" : "Note deleted successfully",
+        t("deleteSuccess")
       );
     } catch (error) {
-      toast.error(isArabic ? "فشل في حذف الملاحظة" : "Failed to delete note");
+      console.log(error,'error from delete note');
+      toast.error(t("deleteError"));
     }
   };
 
@@ -134,7 +141,7 @@ const GalaxyNotes = ({ surah, color }: GalaxyNotesProps) => {
           style={{ color }}
         >
           <StickyNote size={18} />
-          {t("notes")}
+          {t("title")}
         </h3>
 
         {!isAdding && (
@@ -150,7 +157,7 @@ const GalaxyNotes = ({ surah, color }: GalaxyNotesProps) => {
             }}
           >
             <Plus size={14} />
-            {t("addNote")}
+            {t("add")}
           </Button>
         )}
       </div>
@@ -190,10 +197,7 @@ const GalaxyNotes = ({ surah, color }: GalaxyNotesProps) => {
                 <Button
                   size="sm"
                   onClick={handleAddNote}
-                  disabled={
-                    newNoteBody.trim().length < 6 ||
-                    isAddingNote
-                  }
+                  disabled={newNoteBody.trim().length < 6 || isAddingNote}
                   className="h-9 rounded-xl px-4 text-white shadow-lg"
                   style={{
                     backgroundColor: color,
@@ -308,39 +312,44 @@ const GalaxyNotes = ({ surah, color }: GalaxyNotesProps) => {
       </div>
 
       {/* Delete Confirmation */}
-      <AlertDialog
-        open={!!noteToDelete}
-        onOpenChange={(open) => !open && setNoteToDelete(null)}
-      >
-        <AlertDialogContent className="rounded-3xl border-0 bg-white/90 dark:bg-neutral-950/90 backdrop-blur-xl">
-          <AlertDialogHeader>
-            <div className="flex items-center gap-2 text-red-500 mb-2">
-              <AlertCircle size={20} />
-              <AlertDialogTitle>{t("deleteNote")}</AlertDialogTitle>
-            </div>
-            <AlertDialogDescription>
-              {t("confirmDelete")}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter className="gap-2">
-            <AlertDialogCancel className="rounded-xl border-neutral-200 dark:border-neutral-800">
-              {t("cancel")}
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDeleteNote}
-              className="rounded-xl bg-red-500 hover:bg-red-600 text-white"
-              disabled={isDeletingNote}
-            >
-              {isDeletingNote ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Trash2 size={16} className={isArabic ? "ml-2" : "mr-2"} />
-              )}
-              {t("deleteNote")}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <div dir={isArabic ? "rtl" : "ltr"}>
+        <AlertDialog
+          open={!!noteToDelete}
+          onOpenChange={(open) => !open && setNoteToDelete(null)}
+        >
+          <AlertDialogContent
+            dir={isArabic ? "rtl" : "ltr"}
+            className="rounded-3xl border-0 bg-white/90 dark:bg-neutral-950/90 backdrop-blur-xl"
+          >
+            <AlertDialogHeader >
+              <div className="flex items-center gap-2 text-red-500 mb-2">
+                <AlertCircle size={20} />
+                <AlertDialogTitle>{t("delete")}</AlertDialogTitle>
+              </div>
+              <AlertDialogDescription>
+                {t("confirmDelete")}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter className="gap-2">
+              <AlertDialogCancel className="rounded-xl border-neutral-200 dark:border-neutral-800">
+                {t("cancel")}
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleDeleteNote}
+                className="rounded-xl bg-red-500 hover:bg-red-600 text-white"
+                disabled={isDeletingNote}
+              >
+                {isDeletingNote ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Trash2 size={16} className={isArabic ? "ml-2" : "mr-2"} />
+                )}
+                {t("delete")}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
     </div>
   );
 };

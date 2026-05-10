@@ -24,6 +24,7 @@ export const notesApi = qfApiSlice.injectEndpoints({
             ]
           : [{ type: "Note", id: `VERSE-${verse}` }],
     }),
+
     addNote: builder.mutation({
       query: (note: NoteInput) => ({
         url: "/v1/notes",
@@ -31,7 +32,23 @@ export const notesApi = qfApiSlice.injectEndpoints({
         body: note,
       }),
       transformResponse: (response: { data: Note }) => response.data,
-      invalidatesTags: [{ type: "Note", id: "LIST" }],
+      invalidatesTags: (_result, __error, note) => {
+        const tags = [
+          {
+            type: "Note" as const,
+            id: "LIST",
+          },
+        ];
+
+        note.ranges?.forEach((range) => {
+          tags.push({
+            type: "Note",
+            id: `VERSE-${range.split('-')[0]}`,
+          });
+        });
+
+        return tags;
+      },
     }),
     updateNote: builder.mutation({
       query: ({ id, ...note }: Partial<Note> & { id: string }) => ({

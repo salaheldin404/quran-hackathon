@@ -19,6 +19,7 @@ import { createGlassStyle } from "@/lib/utils/galaxy";
 import StatCard from "./StatCard";
 import { Link } from "@/i18n/navigation";
 import GalaxyNotes from "./GalaxyNotes";
+import { useAppSelector } from "@/lib/store/hooks";
 
 interface GalaxySurahDetailsProps {
   selectedSurah: GalaxySurah | null;
@@ -78,6 +79,7 @@ const GalaxySurahDetails = ({
   const locale = useLocale();
   const isArabic = locale === "ar";
   const t = useTranslations("QuranicGalaxy.GalaxySurahDetails");
+  const user = useAppSelector((state) => state.sync.user);
   const params = new URLSearchParams({
     language: locale,
     include_resources: "true",
@@ -109,7 +111,7 @@ const GalaxySurahDetails = ({
   if (isLoading) {
     return (
       <Dialog open onOpenChange={onClose}>
-        <DialogContent className="w-[95vw] lg:w-[1400px] max-w-full! max-h-[90vh] overflow-hidden rounded-3xl border-0 p-0">
+        <DialogContent aria-describedby={undefined} className="w-[95vw] lg:w-[1400px] max-w-full! max-h-[90vh] overflow-hidden rounded-3xl border-0 p-0">
           <DialogTitle>
             <div className="flex items-center justify-center p-8">
               <p className="text-lg text-neutral-500">
@@ -344,9 +346,15 @@ const GalaxySurahDetails = ({
           )}
 
           {/* Notes Section */}
-          <motion.div variants={contentVariants} custom={0.45} className="mb-8">
-            <GalaxyNotes surah={selectedSurah} color={color} />
-          </motion.div>
+          {user && (
+            <motion.div
+              variants={contentVariants}
+              custom={0.45}
+              className="mb-8"
+            >
+              <GalaxyNotes surah={selectedSurah} color={color} />
+            </motion.div>
+          )}
 
           {/* Resources */}
           {!!resources.length && (

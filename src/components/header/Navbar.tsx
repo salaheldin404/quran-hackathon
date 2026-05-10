@@ -18,7 +18,7 @@ const Navbar = () => {
   const pathname = usePathname();
   const isRTL = locale === "ar";
   useNotifications();
-  console.log('pathname:', pathname);
+
   if (pathname === "/quranicGalaxy") return null;
   return (
     <header
