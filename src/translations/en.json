@@ -28,7 +28,8 @@
     "khatma": "Khatma Planner",
     "profile": "Profile",
     "hisn-muslim": "Hisn Muslim",
-    "quranic-galaxy": "Quranic Galaxy"
+    "quranic-galaxy": "Quranic Galaxy",
+    "journey": "Journey"
   },
   "QuickAccess": {
     "message": "Continue your spiritual journey",
@@ -463,6 +464,78 @@
       "khatmaTime": "Choose a time for the Khatma reminder."
     }
   },
+  "Journey": {
+    "title": "Your Qur'an Journey",
+    "subtitle": "Track your progress, maintain your consistency, and celebrate your spiritual growth.",
+    "streak": {
+      "title": "Consistency Streak",
+      "current": "Current Streak",
+      "longest": "Longest Streak",
+      "days": "{count, plural, =1 {day} other {days}}",
+      "readToday": "Read Today",
+      "notReadToday": "Not Read Yet",
+      "consistency": "Consistency",
+      "totalDays": "Total Reading Days",
+      "viewDetails": "View Details"
+    },
+    "heatmap": {
+      "title": "Reading Activity",
+      "subtitle": "Visualize your daily commitment to the Holy Qur'an",
+      "pages": "{count} pages",
+      "minutes": "{count} minutes",
+
+      "lightReading": "Light Reading",
+      "moderateReading": "Moderate Reading",
+      "deepReading": "Deep Reading",
+      "noReading": "No Reading",
+      "today": "Today",
+      "less": "Less",
+      "more": "More"
+    },
+    "stats": {
+      "title": "Spiritual Insights",
+      "totalPages": "Total Pages",
+      "totalVerses": "Total Ayahs",
+      "totalTime": "Time Spent",
+      "avgPages": "Avg. Pages/Day",
+      "minutes": "mins",
+      "hours": "hrs"
+    },
+    "achievements": {
+      "title": "Milestones",
+      "subtitle": "Celebrating your dedication and spiritual milestones",
+      "locked": "Locked",
+      "unlocked": "Unlocked",
+      "firstDay": "First Step",
+      "firstDayDesc": "Your very first day of reading",
+      "streak7": "Consistent Soul",
+      "streak7Desc": "Maintain a 7-day reading streak",
+      "streak30": "Devoted Heart",
+      "streak30Desc": "Maintain a 30-day reading streak",
+      "pages100": "Century of Wisdom",
+      "pages100Desc": "Read 100 pages in total",
+      "khatma": "Khatma Finisher",
+      "khatmaDesc": "Complete your first Khatma plan"
+    },
+    "insights": {
+      "title": "Personal Trends",
+      "mostReadSurah": "Most Read Surah",
+      "mostReadTheme": "Most Explored Theme",
+      "favoriteTime": "Favorite Reading Time",
+      "morning": "Morning",
+      "afternoon": "Afternoon",
+      "evening": "Evening",
+      "night": "Night",
+      "viewThemes": "Explore Themes",
+      "readSurah": "Read Surah"
+    },
+    "empty": {
+      "title": "Begin Your Journey",
+      "subtitle": "Your spiritual progress will appear here as you read. Start your recitation today to build your first streak!",
+      "cta": "Start Reading"
+    },
+    "loading": "Illuminating your journey..."
+  },
   "QuranicGalaxy": {
     "GalaxySurahDetails": {
       "surah": "Surah",
@@ -477,7 +550,6 @@
       "medinan": "Medinan",
       "loading_chapter_info": "Loading chapter information...",
       "order": "Revelation Order"
-   
     },
     "NoteEditor": {
       "title": "Notes",
@@ -497,7 +569,6 @@
       "deleteError": "An error occurred while deleting your note. Please try again.",
       "addError": "An error occurred while adding your note. Please try again.",
       "editError": "An error occurred while updating your note. Please try again."
-      
     },
     "Header": {
       "title": "Quranic Galaxy",

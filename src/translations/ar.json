@@ -28,7 +28,8 @@
     "khatma": "مخطط الختمة",
     "profile": "الملف الشخصي",
     "hisn-muslim": "حصن المسلم",
-    "quranic-galaxy": "المجرة القرآنية"
+    "quranic-galaxy": "المجرة القرآنية",
+    "journey": "رحلتي"
   },
   "QuickAccess": {
     "message": "واصل رحلتك الإيمانية",
@@ -466,6 +467,77 @@
       "quranDuplicate": "اختر سورة مختلفة لكل تذكير.",
       "khatmaTime": "اختر وقتًا لتذكير الختمة."
     }
+  },
+  "Journey": {
+    "title": "رحلتك مع القرآن",
+    "subtitle": "تابع تقدمك، حافظ على استمراريتك، واحتف بمتغيراتك الروحانية.",
+    "streak": {
+      "title": "سلسلة الاستمرارية",
+      "current": "السلسلة الحالية",
+      "longest": "أطول سلسلة",
+      "days": "يوم",
+      "readToday": "تمت القراءة اليوم",
+      "notReadToday": "لم تقرأ اليوم بعد",
+      "consistency": "الاستمرارية",
+      "totalDays": "إجمالي أيام القراءة",
+      "viewDetails": "عرض التفاصيل"
+    },
+    "heatmap": {
+      "title": "نشاط القراءة",
+      "subtitle": "تصور لالتزامك اليومي بالقرآن الكريم",
+      "pages": "{count} صفحة",
+      "minutes": "{count} دقيقة",
+      "lightReading": "قراءة خفيفة",
+      "moderateReading": "قراءة متوسطة",
+      "deepReading": "قراءة مكثفة",
+      "noReading": "لا توجد قراءة",
+      "today": "اليوم",
+      "less": "أقل",
+      "more": "أكثر"
+    },
+    "stats": {
+      "title": "إحصائيات روحانية",
+      "totalPages": "إجمالي الصفحات",
+      "totalVerses": "إجمالي الآيات",
+      "totalTime": "الوقت المنقضي",
+      "avgPages": "متوسط الصفحات/يوم",
+      "minutes": "دقيقة",
+      "hours": "ساعة"
+    },
+    "achievements": {
+      "title": "إنجازات",
+      "subtitle": "نحتفل بتفانيك ومعالمك الروحانية",
+      "locked": "مغلق",
+      "unlocked": "مفتوح",
+      "firstDay": "الخطوة الأولى",
+      "firstDayDesc": "يومك الأول في القراءة",
+      "streak7": "روح مستمرة",
+      "streak7Desc": "حافظ على سلسلة قراءة لمدة 7 أيام",
+      "streak30": "قلب مخلص",
+      "streak30Desc": "حافظ على سلسلة قراءة لمدة 30 يومًا",
+      "pages100": "قرن من الحكمة",
+      "pages100Desc": "اقرأ 100 صفحة في المجمل",
+      "khatma": "متم الختمة",
+      "khatmaDesc": "أكمل أول خطة ختمة لك"
+    },
+    "insights": {
+      "title": "توجهات شخصية",
+      "mostReadSurah": "أكثر سورة قرأت",
+      "mostReadTheme": "أكثر موضوع استكشف",
+      "favoriteTime": "وقت القراءة المفضل",
+      "morning": "الصباح",
+      "afternoon": "الظهيرة",
+      "evening": "المساء",
+      "night": "الليل",
+      "viewThemes": "عرض المواضيع",
+      "readSurah": "اقرأ السورة"
+    },
+    "empty": {
+      "title": "ابدأ رحلتك",
+      "subtitle": "سيظهر تقدمك الروحاني هنا مع استمرارك في القراءة. ابدأ تلاوتك اليوم لبناء أول سلسلة لك!",
+      "cta": "ابدأ القراءة"
+    },
+    "loading": "نضيء رحلتك..."
   },
   "QuranicGalaxy": {
     "GalaxySurahDetails": {
