@@ -31,6 +31,7 @@ export const transformDBToResponse = (
       shortName: history.shortName,
       revelationType: history.revelationType,
       numberOfAyahs: history.numberOfAyahs,
+      revelationOrder: 0,
       createdAt: history.createdAt.toISOString(),
       updatedAt: history.updatedAt.toISOString(),
 
@@ -50,6 +51,7 @@ export const transformDBToResponse = (
       shortName: surah.shortName,
       revelationType: surah.revelationType,
       numberOfAyahs: surah.numberOfAyahs,
+      revelationOrder: 0,
     })),
     wishlistReciters: settings.wishlistReciters.map((reciter) => ({
       createdAt: reciter.createdAt.toISOString(),

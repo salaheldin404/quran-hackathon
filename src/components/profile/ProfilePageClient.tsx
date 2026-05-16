@@ -79,7 +79,6 @@ export default function ProfilePageClient({
 
   const handleSave = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log({ khatmaReminder, quranReminders });
     if (quranReminders.length > MAX_QURAN_REMINDERS) {
       toast.error(t("validation.quranLimit"));
       return;

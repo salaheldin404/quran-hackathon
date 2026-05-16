@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { getSession } from "@/lib/oauth/auth";
 import { redirect } from "next/navigation";
 
 import ProfilePageClient from "@/components/profile/ProfilePageClient";
 
 import { prisma } from "@/lib/prisma";
+import { getUserIdFromCookie } from "@/lib/oauth/session";
 
 export async function generateMetadata({
   params,
@@ -34,15 +34,13 @@ export default async function ProfilePage({
   params: Promise<{ locale: "en" | "ar" }>;
 }) {
   const { locale } = await params;
-  const session = await getSession();
-
-  if (!session?.id) {
+  const userId = await getUserIdFromCookie();
+  if (!userId) {
     redirect(`/${locale}/auth/signin`);
   }
-
   const [user, quranReminders, khatmaReminder] = await prisma.$transaction([
     prisma.user.findUnique({
-      where: { id: session.id },
+      where: { id: userId },
       select: {
         firstName: true,
         lastName: true,
@@ -57,11 +55,11 @@ export default async function ProfilePage({
       },
     }),
     prisma.reminder.findMany({
-      where: { userId: session.id },
+      where: { userId: userId },
       orderBy: [{ createdAt: "asc" }, { updatedAt: "asc" }],
     }),
     prisma.khatmaReminder.findUnique({
-      where: { userId: session.id },
+      where: { userId: userId },
     }),
   ]);
 
