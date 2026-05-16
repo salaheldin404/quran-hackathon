@@ -1,4 +1,3 @@
-
 import { prisma } from "@/lib/prisma";
 import { calculateDaysAndTarget } from "@/lib/utils/khatma";
 import type { UpdateKhatmaPlanData } from "@/types/khatma";
@@ -20,10 +19,7 @@ const serverError = (action: string, error: unknown) => {
     return unauthorized();
   }
   console.error(`Error ${action} khatma plan:`, error);
-  return NextResponse.json(
-    { error: "Internal Server Error" },
-    { status: 500 },
-  );
+  return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
 };
 
 async function revalidateKhatma() {
@@ -90,7 +86,10 @@ export async function PATCH(request: Request, { params }: RouteContext) {
     ) {
       update.pagesPerDay = body.pagesPerDay;
       const remaining = plan.totalPages - plan.completedPages;
-      const { targetDate } = calculateDaysAndTarget(body.pagesPerDay, remaining);
+      const { targetDate } = calculateDaysAndTarget(
+        body.pagesPerDay,
+        remaining,
+      );
       update.targetEndDate = targetDate;
     }
 
@@ -98,6 +97,12 @@ export async function PATCH(request: Request, { params }: RouteContext) {
       where: { id },
       data: update,
     });
+    if (updated.isCompleted) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { completedKhatmas: { increment: 1 } },
+      });
+    }
 
     await revalidateKhatma();
     return NextResponse.json(updated, { status: 200 });

@@ -32,6 +32,8 @@ import { toArabicNumber } from "@/lib/utils/surah";
 
 import useReaderCarousel from "@/hooks/useReaderCarousel";
 import ReaderPageHeader from "@/components/surah/ReaderPageHeader";
+import { formatActivityRanges } from "@/lib/utils/activity";
+import { useAddActivityDayMutation } from "@/lib/store/features/activityApi";
 
 interface SurahClientPageProps {
   initialSurah: Surah;
@@ -46,7 +48,7 @@ const SurahClientPage = ({ initialSurah, locale }: SurahClientPageProps) => {
   const { currentVerseLocation, lastRead } = useAppSelector(
     (state) => state.surah,
   );
-
+  const user = useAppSelector((state) => state.sync.user);
   const dispatch = useAppDispatch();
   const t = useTranslations("Surah");
   const t2 = useTranslations("SurahPage");
@@ -60,8 +62,7 @@ const SurahClientPage = ({ initialSurah, locale }: SurahClientPageProps) => {
 
   const chapterParams = useMemo(() => {
     const params = new URLSearchParams({
-      fields:
-        "text_uthmani,qpc_uthmani_hafs,text_uthmani_tajweed,page_number,audio,chapter_id",
+      fields: "text_uthmani,qpc_uthmani_hafs,page_number,audio,chapter_id",
       per_page: "all",
       translations: "131,85",
       translation_fields: "resource_name,language_id",
@@ -79,7 +80,7 @@ const SurahClientPage = ({ initialSurah, locale }: SurahClientPageProps) => {
       refetchOnMountOrArgChange: true,
     },
   );
-
+  const [addActivityDay] = useAddActivityDayMutation();
   const { handleNextSurah, handlePreviousSurah, navigationState } =
     useSurahNavigation(numericId);
 
@@ -101,6 +102,31 @@ const SurahClientPage = ({ initialSurah, locale }: SurahClientPageProps) => {
     slideCount: readingPages.length,
     isRTL,
     preloadAdjacentSlides: false,
+    onReadingPageChange: async ({ previousIndex, secondsSpent }) => {
+      if (!user) return; // Don't track activity if user is not logged in
+      const isWindowFocused =
+        typeof document !== "undefined" && document.hasFocus();
+
+      if (secondsSpent >= 50 && isWindowFocused) {
+        const previousPage = readingPages[previousIndex];
+        const versesOnPreviousPage = groupedVerses[previousPage] ?? [];
+        const activityRanges = formatActivityRanges(versesOnPreviousPage);
+        if (activityRanges) {
+          // const date = DateTime.utc().toFormat("yyyy-MM-dd");
+          try {
+            await addActivityDay({
+              type: "QURAN",
+              seconds: secondsSpent,
+              ranges: [activityRanges],
+              mushafId: 4,
+            }).unwrap();
+            // clearJourneyYearCache(user.id);
+          } catch (error) {
+            console.error("Failed to save activity:", error);
+          }
+        }
+      }
+    },
   });
 
   const currentReaderPage = readingPages[selectedPageIndex] ?? readingPages[0];
@@ -189,6 +215,14 @@ const SurahClientPage = ({ initialSurah, locale }: SurahClientPageProps) => {
     verseQuery,
     versesData?.verses,
   ]);
+
+  useEffect(() => {
+    if (readingCarouselApi) {
+      readingCarouselApi.on("select", () => {
+        console.log("slidesChanged event triggered");
+      });
+    }
+  }, [readingCarouselApi]);
 
   if (!surah) {
     return (

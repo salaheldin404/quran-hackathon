@@ -21,6 +21,8 @@ interface KhatmaPageSlideProps {
   params: string;
   /** Called when the currently playing verse belongs to this page */
   onVerseHighlighted?: () => void;
+  /** Called when verses are loaded for activity tracking */
+  onVersesLoaded?: (verses: Verse[]) => void;
 }
 
 /** Groups consecutive verses by their chapter_id to insert surah headers */
@@ -59,6 +61,7 @@ function getSurah(chapterId: number): Surah | null {
     englishNameTranslation: s.englishNameTranslation,
     numberOfAyahs: s.numberOfAyahs,
     revelationType: s.revelationType,
+    revelationOrder: s.revelationOrder,
   };
 }
 
@@ -70,6 +73,7 @@ const KhatmaPageSlide = memo(
     shouldFetch,
     params,
     onVerseHighlighted,
+    onVersesLoaded,
   }: KhatmaPageSlideProps) => {
     const locale = useLocale();
     const { fontSize, fontFamily } = useFont();
@@ -85,6 +89,13 @@ const KhatmaPageSlide = memo(
     useEffect(() => {
       onVerseHighlightedRef.current = onVerseHighlighted;
     }, [onVerseHighlighted]);
+
+    // Call onVersesLoaded when verses are available
+    useEffect(() => {
+      if (data?.verses?.length) {
+        onVersesLoaded?.(data.verses as Verse[]);
+      }
+    }, [data?.verses, onVersesLoaded]);
 
     useEffect(() => {
       if (!currentVerse?.verse_key || !data?.verses?.length) return;
