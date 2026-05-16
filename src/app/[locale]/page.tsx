@@ -5,11 +5,11 @@ import QuickAccess from "@/components/home/quickAccess/index";
 import RandomAyah from "@/components/home/RandomAyah";
 import RecentlyPlayed from "@/components/home/RecentlyPlayed";
 import Reciters from "@/components/home/Reciters";
-import { getSession } from "@/lib/oauth/auth";
 
 import { getKhatmaPlan } from "@/server/db/khatmaPlan";
 import { KhatmaPlan } from "@/types/khatma";
 import NotificationPermissionRequest from "@/components/notifications/NotificationPermissionRequest";
+import {  getUserIdFromCookie } from "@/lib/oauth/session";
 
 export async function generateMetadata({
   params,
@@ -116,9 +116,9 @@ export default async function Home({
     sameAs: [],
   };
   let khatma: KhatmaPlan | null = null;
-  const session = await getSession();
-  if (session?.id) {
-    const plan = await getKhatmaPlan(session.id);
+  const userId = await getUserIdFromCookie();
+  if (userId) {
+    const plan = await getKhatmaPlan(userId);
     khatma = plan;
   }
   return (
@@ -134,7 +134,7 @@ export default async function Home({
         <QuickAccess khatma={khatma} />
         {/* Random Ayah */}
         <RandomAyah />
-        {/* <RecentKhatma /> */}
+        
         {/* Featured Surahs */}
         <FeaturedSurahs />
         <Reciters />

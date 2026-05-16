@@ -1,12 +1,11 @@
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { getSession } from "@/lib/oauth/auth";
 import { BookOpen } from "lucide-react";
-
 
 import { getKhatmaPlans } from "@/server/db/khatmaPlan";
 import { KhatmaContent } from "@/components/khatma/KhatmaContent";
 import { KhatmaPlan } from "@/types/khatma";
+import { getUserIdFromCookie } from "@/lib/oauth/session";
 
 export async function generateMetadata({
   params,
@@ -29,7 +28,7 @@ export async function generateMetadata({
         "قراءة القرآن",
         "خطة يومية",
         "إتمام القرآن",
-      "سكينة ستريمز",
+        "سكينة ستريمز",
         "ورد يومي للقرآن",
         "تتبع الختمة",
         "تخطيط ختمة القرآن",
@@ -43,7 +42,7 @@ export async function generateMetadata({
         "daily reading plan",
         "finish Quran",
         "Khatma tracker",
-      "Sakinah Streams",
+        "Sakinah Streams",
         "daily Quran reading",
         "Quran completion planning",
         "daily Quran reading goals",
@@ -96,13 +95,11 @@ export default async function KhatmaPage({
 }) {
   const { locale } = await params;
   const isArabic = locale === "ar";
-  const session = await getSession();
+  const userId = await getUserIdFromCookie();
   const t = await getTranslations("Khatma");
 
   // Get plans only if user is authenticated
-  const plans = session?.id
-    ? await getKhatmaPlans(session.id)
-    : ([] as KhatmaPlan[]);
+  const plans = userId ? await getKhatmaPlans(userId) : ([] as KhatmaPlan[]);
   const baseUrl = "https://skinah-streams.vercel.app";
 
   const jsonLd = {
@@ -133,7 +130,7 @@ export default async function KhatmaPage({
           "تخطيط ختمة القرآن",
           "تحديد أهداف القراءة اليومية",
           "متابعة التقدم في قراءة القرآن",
-        "تنظيم قراءة القرآن اليومية",
+          "تنظيم قراءة القرآن اليومية",
         ]
       : [
           "Quran completion planning",
