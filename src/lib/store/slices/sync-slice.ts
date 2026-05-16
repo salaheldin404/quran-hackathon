@@ -13,6 +13,7 @@ export interface SyncState {
     email: string | null;
     firstName: string | null;
     lastName: string | null;
+    createdAt: string;
   } | null;
 }
 
@@ -22,7 +23,7 @@ export const initialState: SyncState = {
   error: null,
   pendingChanges: 0,
   isAuthenticated: false,
-  user: null
+  user: null,
 };
 
 const syncSlice = createSlice({
@@ -62,7 +63,7 @@ const syncSlice = createSlice({
     setUser: (state, action: PayloadAction<SyncState["user"]>) => {
       state.user = action.payload;
       state.isAuthenticated = !!action.payload;
-    }
+    },
   },
 });
 
@@ -72,7 +73,7 @@ export const {
   incrementPendingChanges,
   resetSync,
   setIsAuthenticated,
-  setUser
+  setUser,
 } = syncSlice.actions;
 
 export const syncReducer = syncSlice.reducer;
