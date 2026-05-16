@@ -113,7 +113,6 @@ const audioSlice = createSlice({
         (item.mushafId ?? null) === (surah.mushafId ?? null);
 
       const existIndex = state.lastPlay.findIndex(match);
-      console.log({ existIndex, surah });
       // If it's already the most recent, nothing to do
       if (existIndex === 0) return;
 
