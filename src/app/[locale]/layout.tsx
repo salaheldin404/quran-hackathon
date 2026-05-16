@@ -208,6 +208,7 @@ export default async function RootLayout({
                     email: user.email,
                     firstName: user.firstName,
                     lastName: user.lastName,
+                    createdAt: user.createdAt.toISOString(),
                   }
                 : null
             }

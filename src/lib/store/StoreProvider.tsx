@@ -15,7 +15,13 @@ const StoreProvider = ({
 }: {
   children: ReactNode;
   initialKhatma: KhatmaPlan | null;
-  user: { id: string; email: string | null; firstName: string | null; lastName: string | null } | null;
+  user: {
+    id: string;
+    createdAt: string;
+    email: string | null;
+    firstName: string | null;
+    lastName: string | null;
+  } | null;
 }) => {
   useEffect(() => {
     store.dispatch(setUser(user));
