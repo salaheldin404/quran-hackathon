@@ -16,6 +16,11 @@ export interface UseReaderCarouselOptions {
   keyboardNavigation?: boolean;
   preloadAdjacentSlides?: boolean;
   emblaOptions?: EmblaOptionsType;
+  onReadingPageChange?: (params: {
+    previousIndex: number;
+    currentIndex: number;
+    secondsSpent: number;
+  }) => void;
 }
 
 export interface UseReaderCarouselReturn {
@@ -39,6 +44,7 @@ const useReaderCarousel = ({
   keyboardNavigation = true,
   preloadAdjacentSlides = true,
   emblaOptions,
+  onReadingPageChange,
 }: UseReaderCarouselOptions): UseReaderCarouselReturn => {
   const safeInitialIndex = clampReaderCarouselIndex(initialIndex, slideCount);
   const [selectedIndex, setSelectedIndex] = useState(safeInitialIndex);
@@ -52,6 +58,8 @@ const useReaderCarousel = ({
     }),
   );
   const isInitialScrollDone = useRef(false);
+  const previousIndexRef = useRef(safeInitialIndex);
+  const pageEnterTimeRef = useRef(Date.now());
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
     ...DEFAULT_READER_CAROUSEL_OPTIONS,
@@ -85,11 +93,25 @@ const useReaderCarousel = ({
     });
   }, [selectedIndex, slideCount, preloadAdjacentSlides]);
 
-  const onSelect = useCallback((api: EmblaCarouselType) => {
-    setSelectedIndex(api.selectedScrollSnap());
-    setCanScrollPrev(api.canScrollPrev());
-    setCanScrollNext(api.canScrollNext());
-  }, []);
+  const onSelect = useCallback(
+    (api: EmblaCarouselType) => {
+      const currentIndex = api.selectedScrollSnap();
+      const previousIndex = previousIndexRef.current;
+      const secondsSpent = Math.floor(
+        (Date.now() - pageEnterTimeRef.current) / 1000,
+      );
+      setSelectedIndex(api.selectedScrollSnap());
+      setCanScrollPrev(api.canScrollPrev());
+      setCanScrollNext(api.canScrollNext());
+
+      if (currentIndex !== previousIndex) {
+        onReadingPageChange?.({ previousIndex, currentIndex, secondsSpent });
+      }
+      previousIndexRef.current = currentIndex;
+      pageEnterTimeRef.current = Date.now();
+    },
+    [onReadingPageChange],
+  );
 
   useEffect(() => {
     if (!emblaApi) return;

@@ -14,6 +14,9 @@ import { Button } from "../ui/button";
 import DotIndicators from "./DotIndicators";
 import ReaderPageHeader from "../surah/ReaderPageHeader";
 import useReaderCarousel from "@/hooks/useReaderCarousel";
+import { useAddActivityDayMutation } from "@/lib/store/features/activityApi";
+import { formatActivityRanges } from "@/lib/utils/activity";
+import { Verse } from "@/types/verse";
 
 interface KhatmaReaderCarouselProps {
   start: number;
@@ -37,10 +40,57 @@ const KhatmaReaderCarousel = ({ start, end }: KhatmaReaderCarouselProps) => {
     (state) => state.khatma.khatmaBookmarkIndex,
   );
 
+  const [addActivityDay] = useAddActivityDayMutation();
+
   const pages = useMemo(
     () => Array.from({ length: end - start + 1 }, (_, i) => start + i),
     [start, end],
   );
+
+  // Store verses data for each page to enable activity tracking
+  const [pageVersesMap, setPageVersesMap] = useState(
+    new Map<number, Verse[]>(),
+  );
+
+  const handleVersesLoaded = useCallback((pageNumber: number, verses: Verse[]) => {
+    setPageVersesMap((prev) => {
+      const updated = new Map(prev);
+      updated.set(pageNumber, verses);
+      return updated;
+    });
+  }, []);
+
+  const handleReadingPageChange = useCallback(
+    async ({ previousIndex, secondsSpent }: { previousIndex: number; secondsSpent: number }) => {
+      if (!user) return; // Don't track activity if user is not logged in
+      
+      const isWindowFocused =
+        typeof document !== "undefined" && document.hasFocus();
+
+      if (secondsSpent >= 50 && isWindowFocused) {
+        const previousPage = pages[previousIndex];
+        const versesOnPreviousPage = pageVersesMap.get(previousPage) ?? [];
+        
+        if (versesOnPreviousPage.length > 0) {
+          const activityRanges = formatActivityRanges(versesOnPreviousPage);
+          if (activityRanges) {
+            try {
+              await addActivityDay({
+                type: "QURAN",
+                seconds: secondsSpent,
+                ranges: [activityRanges],
+                mushafId: 4,
+              }).unwrap();
+            } catch (error) {
+              console.error("Failed to save activity:", error);
+            }
+          }
+        }
+      }
+    },
+    [user, pages, pageVersesMap, addActivityDay],
+  );
+
   const {
     emblaRef,
     selectedIndex,
@@ -54,6 +104,7 @@ const KhatmaReaderCarousel = ({ start, end }: KhatmaReaderCarouselProps) => {
     slideCount: pages.length,
     isRTL,
     initialIndex: storeSlideIndex,
+    onReadingPageChange: handleReadingPageChange,
   });
   const isCurrentBookmark = storeSlideIndex === selectedIndex;
   const isLastSlide = selectedIndex === pages.length - 1;
@@ -178,6 +229,9 @@ const KhatmaReaderCarousel = ({ start, end }: KhatmaReaderCarouselProps) => {
                     shouldFetch={fetchedSlides.has(index)}
                     params={params}
                     onVerseHighlighted={() => scrollTo(index)}
+                    onVersesLoaded={(verses) =>
+                      handleVersesLoaded(pageNumber, verses)
+                    }
                   />
                 </div>
               </div>
