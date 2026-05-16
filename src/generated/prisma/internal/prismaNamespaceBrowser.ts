@@ -81,12 +81,11 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 export const UserScalarFieldEnum = {
   id: 'id',
   qfUserId: 'qfUserId',
-  accessToken: 'accessToken',
   refreshToken: 'refreshToken',
-  expiresAt: 'expiresAt',
   firstName: 'firstName',
   lastName: 'lastName',
   email: 'email',
+  completedKhatmas: 'completedKhatmas',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -115,7 +114,8 @@ export const ReminderScalarFieldEnum = {
   days: 'days',
   isEnabled: 'isEnabled',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  nextReminderAt: 'nextReminderAt'
 } as const
 
 export type ReminderScalarFieldEnum = (typeof ReminderScalarFieldEnum)[keyof typeof ReminderScalarFieldEnum]
@@ -128,7 +128,8 @@ export const KhatmaReminderScalarFieldEnum = {
   timezone: 'timezone',
   isEnabled: 'isEnabled',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  nextReminderAt: 'nextReminderAt'
 } as const
 
 export type KhatmaReminderScalarFieldEnum = (typeof KhatmaReminderScalarFieldEnum)[keyof typeof KhatmaReminderScalarFieldEnum]

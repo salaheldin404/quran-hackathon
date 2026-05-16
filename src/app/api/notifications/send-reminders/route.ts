@@ -1,33 +1,24 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { DateTime } from "luxon";
+import pLimit from "p-limit";
+import { NotificationStatus } from "@/types/notification";
 import {
-  KhatmaReminderWithUser,
-  ReminderWithUser,
-} from "@/types/notification";
-import sendNotification from "@/lib/notifications/sendNotification";
-import sendKhatmaReminderNotification from "@/lib/notifications/sendKhatmaReminderNotification";
+  sendAndAdvanceKhatmaReminder,
+  sendAndAdvanceReminder,
+} from "@/lib/notifications";
 
-function getLocalTimeAndDay(timezone: string) {
-  const now = DateTime.now().setZone(timezone);
-  return {
-    day: now.weekday % 7, // Convert to 0-6 (Sunday-Saturday)
-    time: now.toFormat("HH:mm"),
-  };
-}
-
-function isReminderDue(
-  reminder: Pick<ReminderWithUser, "time" | "days" | "timezone">,
-): boolean {
-  const { time, day } = getLocalTimeAndDay(reminder.timezone);
-  return reminder.time === time && reminder.days.includes(day);
-}
-
-function isKhatmaReminderDue(
-  reminder: Pick<KhatmaReminderWithUser, "time" | "timezone">,
-): boolean {
-  const { time } = getLocalTimeAndDay(reminder.timezone);
-  return reminder.time === time;
+function summarise(
+  results: PromiseSettledResult<{ status: NotificationStatus }>[],
+) {
+  return results.reduce(
+    (acc, result) => {
+      const key =
+        result.status === "fulfilled" ? result.value.status : "failed";
+      acc[key]++;
+      return acc;
+    },
+    { sent: 0, skipped: 0, failed: 0 },
+  );
 }
 
 export async function GET(req: Request) {
@@ -36,55 +27,61 @@ export async function GET(req: Request) {
     if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-
+    const now = new Date();
     const [reminders, khatmaReminders] = await prisma.$transaction([
       prisma.reminder.findMany({
-        where: { isEnabled: true },
-        include: {
+        where: { isEnabled: true, nextReminderAt: { lte: now } },
+        select: {
+          id: true,
+          timezone: true,
+          time: true,
+          days: true,
+          surahId: true,
+          isEnabled: true,
           user: {
-            include: { pushSubscriptions: true },
+            select: {
+              id: true,
+              pushSubscriptions: true,
+            },
           },
         },
       }),
       prisma.khatmaReminder.findMany({
-        where: { isEnabled: true }, 
-        include: {
+        where: { isEnabled: true, nextReminderAt: { lte: now } },
+        select: {
+          id: true,
+          timezone: true,
+          time: true,
+          isEnabled: true,
           user: {
-            include: { pushSubscriptions: true },
+            select: { id: true, pushSubscriptions: true },
           },
         },
       }),
     ]);
+    if (reminders.length === 0 && khatmaReminders.length === 0) {
+      return NextResponse.json({
+        success: true,
+        due: 0,
+        sent: 0,
+        skipped: 0,
+        failed: 0,
+      });
+    }
 
-    const due = reminders.filter(isReminderDue);
-    const dueKhatma = khatmaReminders.filter(isKhatmaReminderDue);
+    const limit = pLimit(10);
     const results = await Promise.allSettled([
-      ...due.map(sendNotification),
-      ...dueKhatma.map(sendKhatmaReminderNotification),
+      ...reminders.map((r) => limit(() => sendAndAdvanceReminder(r))),
+      ...khatmaReminders.map((r) =>
+        limit(() => sendAndAdvanceKhatmaReminder(r)),
+      ),
     ]);
-    // 4. Summarise
-    const summary = results.reduce(
-      (acc, result) => {
-        if (result.status === "fulfilled") {
-          acc[result.value.status]++;
-        } else {
-          acc.failed++;
-        }
-        return acc;
-      },
-      { sent: 0, skipped: 0, failed: 0 },
-    );
-    console.log(
-      `[reminders] Done — checked: ${reminders.length + khatmaReminders.length}, due: ${due.length + dueKhatma.length}, ` +
-        `sent: ${summary.sent}, skipped: ${summary.skipped}, failed: ${summary.failed}`,
-    );
     return NextResponse.json({
       success: true,
-      checked: reminders.length + khatmaReminders.length,
-      due: due.length + dueKhatma.length,
-      quranDue: due.length,
-      khatmaDue: dueKhatma.length,
-      ...summary,
+      due: reminders.length + khatmaReminders.length,
+      quranDue: reminders.length,
+      khatmaDue: khatmaReminders.length,
+      ...summarise(results),
     });
   } catch (error) {
     console.error("Error sending reminders:", error);

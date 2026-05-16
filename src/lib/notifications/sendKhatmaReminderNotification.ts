@@ -46,9 +46,7 @@ async function sendKhatmaReminderNotification(
 
   try {
     const response = await messaging.sendEachForMulticast(message);
-    console.log(
-      `Sent ${response.successCount} Khatma notifications for reminder ${reminder.id}`,
-    );
+   
     let removedTokensCount = 0;
     if (response.failureCount > 0) {
       const invalidTokens = tokens.filter((_, i) =>
