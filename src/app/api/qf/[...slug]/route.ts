@@ -1,5 +1,5 @@
-import { getSession } from "@/lib/oauth/auth";
-import { callQF } from "@/lib/oauth/qf";
+import { callQF, refreshToken } from "@/lib/oauth/qf";
+import { getSessionPayload, getUserIdFromCookie } from "@/lib/oauth/session";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
@@ -35,9 +35,17 @@ async function handler(
   { params }: { params: Promise<{ slug: string[] }> },
 ) {
   try {
-    const session = await getSession();
-    if (!session) {
-      return new Response("Unauthorized", { status: 401 });
+    let sessionPayload = await getSessionPayload();
+    const userId = await getUserIdFromCookie();
+    if (!sessionPayload?.accessToken) {
+      if (userId) {
+        sessionPayload = await refreshToken(userId);
+        if (!sessionPayload) {
+          return new Response("Unauthorized", { status: 401 });
+        }
+      } else {
+        return new Response("Unauthorized", { status: 401 });
+      }
     }
 
     const { slug } = await params;
@@ -45,20 +53,55 @@ async function handler(
     const queryString = req.nextUrl.search;
 
     const endpoint = `/${apiPath}${queryString}`;
-    const apiRes = await callQF(session.id, endpoint, {
+
+    // Properly handle request body for non-GET methods
+    let requestBody: string | undefined;
+    if (["POST", "PATCH", "PUT", "DELETE"].includes(req.method)) {
+      try {
+        requestBody = await req.text();
+      } catch (e) {
+        console.warn("Failed to read request body:", e);
+      }
+    }
+
+    const apiRes = await callQF(sessionPayload, endpoint, {
       method: req.method,
       headers: {
         "Content-Type": req.headers.get("Content-Type") || "application/json",
       },
-      body: req.method !== "GET" ? await req.text() : undefined,
+      body: requestBody,
     });
-    const text = await apiRes.text();
-    return NextResponse.json(JSON.parse(text), {
-      headers: {
-        "Content-Type":
-          apiRes.headers.get("Content-Type") || "application/json",
-      },
+
+    const contentType = apiRes.headers.get("Content-Type") || "";
+
+    // Optimized JSON handling with safety fallback
+    if (contentType.includes("application/json")) {
+      const responseText = await apiRes.text();
+      try {
+        const data = responseText ? JSON.parse(responseText) : {};
+        return NextResponse.json(data, {
+          status: apiRes.status,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      } catch (e) {
+        console.log("Failed to parse JSON response:", e);
+        // If JSON parsing fails despite the header, return as raw text
+        return new Response(responseText, {
+          status: apiRes.status,
+          headers: { "Content-Type": contentType },
+        });
+      }
+    }
+
+    // Transparent proxying for non-JSON content types (streams, blobs, etc.)
+    return new Response(apiRes.body, {
       status: apiRes.status,
+      headers: {
+        "Content-Type": contentType,
+        "Cache-Control": apiRes.headers.get("Cache-Control") || "no-store",
+      },
     });
   } catch (error) {
     console.error("SERVER_PROXY_ERROR:", error);

@@ -1,14 +1,14 @@
 import { prisma } from "../prisma";
-import { getSessionPayload } from "./session";
+import { getUserIdFromCookie } from "./session";
 
 export async function getSession() {
-  const payload = await getSessionPayload();
-  if (!payload) return null;
+  const userId = await getUserIdFromCookie();
+  if (!userId) return null;
 
   const user = await prisma.user.findUnique({
-    where: { id: payload.userId },
+    where: { id: userId },
   });
-
+  if (!user) return null;
   return user;
 }
 
