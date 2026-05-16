@@ -23,3 +23,5 @@ export type KhatmaReminderWithUser = {
   isEnabled: boolean;
   user: NotificationUser;
 };
+
+export type NotificationStatus = "sent" | "skipped" | "failed";
