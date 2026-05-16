@@ -12,17 +12,13 @@ import type {
   KhatmaActionResult,
   UpdateKhatmaPlanData,
 } from "@/types/khatma";
-import { getSession } from "@/lib/oauth/auth";
 import { getLocale, getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
+import { getUserIdFromCookie } from "@/lib/oauth/session";
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
-/** Authenticate and return the user ID, or null. */
-async function getAuthUserId(): Promise<string | null> {
-  const session = await getSession();
-  return session?.id ?? null;
-}
+
 
 /** Revalidate khatma-related caches. */
 async function revalidateKhatma() {
@@ -54,7 +50,7 @@ export async function createKhatmaPlan(
   });
 
   try {
-    const userId = await getAuthUserId();
+    const userId = await getUserIdFromCookie();
     if (!userId) return unauthorized;
 
     // Validate with schema
@@ -109,7 +105,7 @@ export async function updateKhatma(
   const t = await getTranslations({ locale, namespace: "Khatma" });
 
   try {
-    const userId = await getAuthUserId();
+    const userId = await getUserIdFromCookie();
     if (!userId) return unauthorized;
 
     const plan = await findOwnedPlan(id, userId);
@@ -170,7 +166,7 @@ export async function deleteKhatmaPlan(
   const t = await getTranslations({ locale, namespace: "Khatma" });
 
   try {
-    const userId = await getAuthUserId();
+    const userId = await getUserIdFromCookie();
     if (!userId) return unauthorized;
 
     const plan = await findOwnedPlan(id, userId);

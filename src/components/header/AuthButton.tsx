@@ -31,7 +31,6 @@ const AuthButton = () => {
     dispatch(resetToDefaultState());
     
     await fetch("/api/auth/logout");
-    router.refresh();
     router.push("/");
   }, [dispatch, router]);
 
