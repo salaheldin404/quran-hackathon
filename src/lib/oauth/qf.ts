@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
-
-import { User } from "@/generated/prisma/browser";
+import { decryptToken, encryptToken } from "./token-encryption";
+import { SessionPayload, setSession } from "./session";
 
 type QfOAuthConfig = {
   clientId: string;
@@ -11,7 +11,11 @@ type QfOAuthConfig = {
   baseApiUrl: string;
 };
 
+let cachedConfig: QfOAuthConfig | null = null;
+
 export const getQfOAuthConfig = (): QfOAuthConfig => {
+  if (cachedConfig) return cachedConfig;
+
   const {
     QF_CLIENT_ID,
     QF_CLIENT_SECRET,
@@ -32,7 +36,7 @@ export const getQfOAuthConfig = (): QfOAuthConfig => {
     throw new Error("Missing QF OAuth environment variables");
   }
 
-  return {
+  cachedConfig = {
     clientId: QF_CLIENT_ID,
     clientSecret: QF_CLIENT_SECRET,
     authUrl: QF_AUTH_URL,
@@ -40,73 +44,89 @@ export const getQfOAuthConfig = (): QfOAuthConfig => {
     redirectUri: QF_REDIRECT_URI,
     baseApiUrl: QF_BASE_API_URL,
   };
-};
-export async function refreshToken(user: User) {
-  const { tokenUrl, clientId, clientSecret } = getQfOAuthConfig();
-  const authHeader = Buffer.from(`${clientId}:${clientSecret}`).toString(
-    "base64",
-  );
 
-  const res = await fetch(tokenUrl, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      Authorization: `Basic ${authHeader}`,
-    },
-    body: new URLSearchParams({
-      grant_type: "refresh_token",
-      refresh_token: user.refreshToken!,
-      client_id: clientId,
-    }),
-  });
-  const data = await res.json();
-  if (data.error) {
-    throw new Error(data.error_description || "Failed to refresh token");
+  return cachedConfig;
+};
+
+// Map to track ongoing refresh operations to prevent race conditions
+const refreshPromises = new Map<string, Promise<SessionPayload>>();
+
+export async function refreshToken(userId: string): Promise<SessionPayload> {
+  console.log(`Attempting to refresh token for user ${userId}`);
+  // If there's already an ongoing refresh for this user, return that promise
+  const existingPromise = refreshPromises.get(userId);
+  if (existingPromise) return existingPromise;
+
+  const { tokenUrl, clientId, clientSecret } = getQfOAuthConfig();
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user || !user.refreshToken) {
+    throw new Error("No refresh token available for user");
   }
-  const updatedUser = await prisma.user.update({
-    where: { id: user.id },
-    data: {
-      accessToken: data.access_token,
-      refreshToken: data.refresh_token,
-      expiresAt: new Date(Date.now() + data.expires_in * 1000),
-    },
-  });
-  return updatedUser;
+  const decryptedRefreshToken = decryptToken(user.refreshToken);
+  const refreshPromise = (async () => {
+    try {
+      const authHeader = Buffer.from(`${clientId}:${clientSecret}`).toString(
+        "base64",
+      );
+
+      const res = await fetch(tokenUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          Authorization: `Basic ${authHeader}`,
+        },
+        body: new URLSearchParams({
+          grant_type: "refresh_token",
+          refresh_token: decryptedRefreshToken,
+          client_id: clientId,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.error) {
+        throw new Error(data.error_description || "Failed to refresh token");
+      }
+      const encryptRefreshToken = encryptToken(data.refresh_token);
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          refreshToken: encryptRefreshToken,
+        },
+      });
+
+      await setSession(data.access_token);
+      return {
+        accessToken: data.access_token,
+        exp: Date.now() + data.expires_in * 1000,
+      };
+    } finally {
+      // Always remove the promise from the map when finished
+      refreshPromises.delete(user.id);
+    }
+  })();
+
+  refreshPromises.set(user.id, refreshPromise);
+  return refreshPromise;
 }
 
 export async function callQF(
-  userId: string,
+  sessionPayload: SessionPayload,
   endpoint: string,
   options?: RequestInit,
 ) {
   const { baseApiUrl, clientId } = getQfOAuthConfig();
-  let user = await prisma.user.findUnique({ where: { id: userId } });
-  if (!user) throw new Error("User not found");
-  if (user.expiresAt && user.expiresAt.getTime() - Date.now() < 60000) {
-    // Refresh if less than 1 min left
-    user = await refreshToken(user);
-  }
 
-  const res = await fetch(`${baseApiUrl}${endpoint}`, {
-    ...options,
-    headers: {
-      ...(options?.headers || {}),
-      "Content-Type": "application/json",
-      "x-auth-token": user.accessToken!,
-      "x-client-id": clientId,
-    },
-  });
-  if (res.status === 401) {
-    user = await refreshToken(user);
-    return await fetch(`${baseApiUrl}${endpoint}`, {
+  const makeRequest = async (accessToken: string) => {
+    return fetch(`${baseApiUrl}${endpoint}`, {
       ...options,
       headers: {
-        ...(options?.headers || {}),
         "Content-Type": "application/json",
-        "x-auth-token": user.accessToken!,
+        ...(options?.headers || {}),
+        "x-auth-token": accessToken,
         "x-client-id": clientId,
       },
     });
-  }
-  return res;
+  };
+
+  return await makeRequest(sessionPayload.accessToken);
 }
