@@ -13,36 +13,6 @@ import {
   SettingsResponse,  
 } from "@/types/settings";
 
-// Transform DB wishlist surah to Redux format
-// function transformWishlistSurahs(dbSurahs: WishlistSurahResponse[]): Surah[] {
-//   return dbSurahs.map((s) => ({
-//     number: s.surahNumber,
-//     name: s.surahName,
-//     reciterId: s.reciterId,
-//     reciterName: s.reciterName,
-//     mushafId: s.mushafId,
-//     mushafName: s.mushafName,
-//     serverLink: s.url,
-//     englishName: s.englishName,
-//     englishNameTranslation: s.englishNameTranslation,
-//     shortName: s.shortName,
-//     revelationType: s.revelationType,
-//     numberOfAyahs: s.numberOfAyahs,
-//   }));
-// }
-
-// // Transform DB wishlist reciter to Redux format
-// function transformWishlistReciters(
-//   dbReciters: ReciterWishlist[],
-// ): ReciterWishlist[] {
-//   return dbReciters.map((r) => ({
-//     reciter_id: r.reciterId,
-//     reciter_name: r.reciterName,
-//     reciter_image: r.reciterImg,
-//     mushaf_id: r.mushafId,
-//     mushaf_name: r.mushafName,
-//   }));
-// }
 
 export function useHydrateSettings() {
   const { user, isAuthenticated } = useAppSelector((state) => state.sync);

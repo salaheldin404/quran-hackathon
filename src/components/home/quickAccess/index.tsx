@@ -1,5 +1,7 @@
 "use client";
 import { useTranslations } from "next-intl";
+import { useGetCurrentStreakQuery } from "@/lib/store/features/streaksApi";
+import { useEffect, useState } from "react";
 
 import QuickRecentlyPlayed from "./QuickRecentlyPlayed";
 import LastRead from "./LastRead";
@@ -7,12 +9,27 @@ import FavouriteSurahs from "./FavouriteSurahs";
 import { KhatmaPlan } from "@/types/khatma";
 import KhatmaCardClient from "./KhatmaCardClient";
 import KhatmaCardStart from "./KhatmaCardStart";
-// import RecentKhatma from "./RecentKhatma";
+import { StreakCard } from "@/components/journey/StreakCard";
+import { useAppSelector } from "@/lib/store/hooks";
 interface QuickAccessProps {
   khatma: KhatmaPlan | null;
 }
 const QuickAccess = ({ khatma }: QuickAccessProps) => {
   const t = useTranslations("QuickAccess");
+  const user = useAppSelector((state) => state.sync.user);
+  const [isHydrated, setIsHydrated] = useState(false);
+  
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+  
+  const { data: currentStreakData, isLoading: isStreakLoading } =
+    useGetCurrentStreakQuery({}, { skip: !user });
+
+  const streakStats = {
+    currentStreak: currentStreakData?.days ?? 0,
+  };
+
   return (
     <section className={`py-10 `}>
       <div className="main-container">
@@ -30,6 +47,13 @@ const QuickAccess = ({ khatma }: QuickAccessProps) => {
             <KhatmaCardClient plan={khatma} />
           ) : (
             <KhatmaCardStart />
+          )}
+          {isHydrated && user && (
+            <StreakCard
+              stats={streakStats}
+              variant="compact"
+              isLoading={isStreakLoading}
+            />
           )}
         </div>
       </div>

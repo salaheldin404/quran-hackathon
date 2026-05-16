@@ -196,9 +196,6 @@ startAppListening({
   effect: (action, listenerApi) => {
     const state = listenerApi.getState();
 
-    // Increment pending changes for optimistic UI
-    // listenerApi.dispatch(incrementPendingChanges());
-
     // Skip ALL persisting when setReciter is dispatched for a specific reciter
     // (one with a custom source URL). Play history is always saved normally.
     if (setReciter.match(action) && !!action.payload.source) {
