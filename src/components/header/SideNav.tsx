@@ -19,6 +19,8 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { FaRadio } from "react-icons/fa6";
 import { GiSoundWaves } from "react-icons/gi";
 import { BookOpen, UserRound } from "lucide-react";
+import { GiJourney } from "react-icons/gi";
+
 import { useEffect, useState } from "react";
 
 import { ModeToggle } from "./mode-toggle";
@@ -34,6 +36,11 @@ const LINKS = [
     title: "profile",
     href: "/profile",
     icon: UserRound,
+  },
+  {
+    title: "journey",
+    href: "/journey",
+    icon: GiJourney,
   },
   {
     title: "favorites",
@@ -55,17 +62,17 @@ const LINKS = [
     href: "/khatma",
     icon: BookOpen,
   },
- 
+
   {
     title: "hisn-muslim",
     href: "/hisn-muslim",
     icon: FaPrayingHands,
   },
   {
-    "title": "quranic-galaxy",
-    "href": "/quranicGalaxy",
-    "icon": TbGalaxy,
-  }
+    title: "quranic-galaxy",
+    href: "/quranicGalaxy",
+    icon: TbGalaxy,
+  },
 ];
 
 const SideNav = () => {
@@ -101,7 +108,7 @@ const SideNav = () => {
           <SheetTitle>{t("title")}</SheetTitle>
         </SheetHeader>
         {/* Navigation Links */}
-        <nav className="flex-1 overflow-auto py-2">
+        <nav className="flex-1 overflow-auto py-2 hide-scrollbar">
           <ul className="space-y-1">
             {LINKS.map(({ title, href, icon: Icon }) => {
               const isActive = pathname === href;
