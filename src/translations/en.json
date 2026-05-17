@@ -461,7 +461,8 @@
       "days": "Select at least one day for the Quran reminder.",
       "quranLimit": "You can save up to 5 Quran reminders.",
       "quranDuplicate": "Choose a different Surah for each reminder.",
-      "khatmaTime": "Choose a time for the Khatma reminder."
+      "khatmaTime": "Choose a time for the Khatma reminder.",
+      "timeRounded": "Time must be rounded to 15 minutes. It has been adjusted."
     }
   },
   "Journey": {
