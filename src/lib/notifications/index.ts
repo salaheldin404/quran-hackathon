@@ -2,7 +2,6 @@ import { KhatmaReminderWithUser, ReminderWithUser } from "@/types/notification";
 import quranData from "@/data/all-quran-surah.json";
 import { prisma } from "@/lib/prisma";
 import { messaging } from "@/lib/firebase/admin";
-import { DateTime } from "luxon";
 
 type SendResult = {
   reminderId: string;
@@ -132,72 +131,72 @@ export async function sendKhatmaReminderNotification(
   }
 }
 
-export function calculateNextReminderAt(
-  time: string,
-  timezone: string,
-  days?: number[],
-): Date {
-  const [hour, minute] = time.split(":").map(Number);
-  const now = DateTime.now().setZone(timezone);
+// export function calculateNextReminderAt(
+//   time: string,
+//   timezone: string,
+//   days?: number[],
+// ): Date {
+//   const [hour, minute] = time.split(":").map(Number);
+//   const now = DateTime.now().setZone(timezone);
 
-  for (let i = 1; i <= 7; i++) {
-    const candidate = now
-      .plus({ days: i })
-      .set({ hour, minute, second: 0, millisecond: 0 });
+//   for (let i = 1; i <= 7; i++) {
+//     const candidate = now
+//       .plus({ days: i })
+//       .set({ hour, minute, second: 0, millisecond: 0 });
 
-    const validDay = !days?.length || days.includes(candidate.weekday);
+//     const validDay = !days?.length || days.includes(candidate.weekday);
 
-    if (validDay && candidate > now) {
-      return candidate.toUTC().toJSDate();
-    }
-  }
+//     if (validDay && candidate > now) {
+//       return candidate.toUTC().toJSDate();
+//     }
+//   }
 
-  throw new Error(`No valid next reminder found for days: ${days}`);
-}
+//   throw new Error(`No valid next reminder found for days: ${days}`);
+// }
 
-export async function sendAndAdvanceReminder(reminder: ReminderWithUser) {
-  const result = await sendNotification(reminder);
+// export async function sendAndAdvanceReminder(reminder: ReminderWithUser) {
+//   const result = await sendNotification(reminder);
 
-  if (result.status !== "sent") {
-    return result;
-  }
+//   if (result.status !== "sent") {
+//     return result;
+//   }
 
-  await prisma.reminder.update({
-    where: {
-      id: reminder.id,
-    },
+//   await prisma.reminder.update({
+//     where: {
+//       id: reminder.id,
+//     },
 
-    data: {
-      nextReminderAt: calculateNextReminderAt(
-        reminder.time,
-        reminder.timezone,
-        reminder.days,
-      ),
-    },
-  });
+//     data: {
+//       nextReminderAt: calculateNextReminderAt(
+//         reminder.time,
+//         reminder.timezone,
+//         reminder.days,
+//       ),
+//     },
+//   });
 
-  return result;
-}
+//   return result;
+// }
 
-export async function sendAndAdvanceKhatmaReminder(
-  reminder: KhatmaReminderWithUser,
-) {
-  const result = await sendKhatmaReminderNotification(reminder);
+// export async function sendAndAdvanceKhatmaReminder(
+//   reminder: KhatmaReminderWithUser,
+// ) {
+//   const result = await sendKhatmaReminderNotification(reminder);
 
-  if (result.status !== "sent") {
-    return result;
-  }
+//   if (result.status !== "sent") {
+//     return result;
+//   }
 
-  // Daily reminder
-  await prisma.khatmaReminder.update({
-    where: {
-      id: reminder.id,
-    },
+//   // Daily reminder
+//   await prisma.khatmaReminder.update({
+//     where: {
+//       id: reminder.id,
+//     },
 
-    data: {
-      nextReminderAt: calculateNextReminderAt(reminder.time, reminder.timezone),
-    },
-  });
+//     data: {
+//       nextReminderAt: calculateNextReminderAt(reminder.time, reminder.timezone),
+//     },
+//   });
 
-  return result;
-}
+//   return result;
+// }
