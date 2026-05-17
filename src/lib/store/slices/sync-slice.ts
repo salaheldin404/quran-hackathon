@@ -2,19 +2,21 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export type SyncStatus = "idle" | "pending" | "syncing" | "synced" | "error";
 
+export type UserSync = {
+  id: string;
+  email: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  createdAt: string;
+}
+
 export interface SyncState {
   status: SyncStatus;
   lastSyncedAt: number | null;
   error: string | null;
   pendingChanges: number;
   isAuthenticated: boolean;
-  user: {
-    id: string;
-    email: string | null;
-    firstName: string | null;
-    lastName: string | null;
-    createdAt: string;
-  } | null;
+  user: UserSync | null;
 }
 
 export const initialState: SyncState = {
