@@ -29,177 +29,6 @@ export interface JourneyStats {
   };
 }
 
-// export function calculateJourneyStats(activities: Activity[]): JourneyStats {
-//   if (!activities || activities.length === 0) {
-//     return {
-//       currentStreak: 0,
-//       longestStreak: 0,
-//       totalReadingDays: 0,
-//       totalPagesRead: 0,
-//       totalVersesRead: 0,
-//       totalSecondsRead: 0,
-//       consistencyPercentage: 0,
-//       isReadToday: false,
-//       heatmapData: [],
-//       achievements: [],
-//       insights: {
-//         mostReadSurahId: null,
-//         mostReadThemeId: null,
-//       },
-//     };
-//   }
-
-//   const today = DateTime.now().startOf("day");
-//   const yesterday = today.minus({ days: 1 });
-
-//   let currentStreak = 0;
-//   let longestStreak = 0;
-//   let tempStreak = 0;
-//   let totalPagesRead = 0;
-//   let totalVersesRead = 0;
-//   let totalSecondsRead = 0;
-
-//   const activityDates = new Set(
-//     activities.map((a) => DateTime.fromISO(a.date).toISODate())
-//   );
-
-//   const surahCounts: Record<number, number> = {};
-
-//   // Calculate stats
-//   activities.forEach((a) => {
-//     totalPagesRead += a.pagesRead || 0;
-//     totalVersesRead += a.verseRead || 0;
-//     totalSecondsRead += a.secondsRead || 0;
-
-//     // Extract surah IDs from ranges (e.g., "1:1-1:2")
-//     a.ranges?.forEach((range) => {
-//       const surahId = parseInt(range.split(":")[0]);
-//       if (!isNaN(surahId)) {
-//         surahCounts[surahId] = (surahCounts[surahId] || 0) + 1;
-//       }
-//     });
-//   });
-
-//   // Most read surah
-//   let mostReadSurahId = null;
-//   let maxSurahCount = 0;
-//   Object.entries(surahCounts).forEach(([id, count]) => {
-//     if (count > maxSurahCount) {
-//       maxSurahCount = count;
-//       mostReadSurahId = parseInt(id);
-//     }
-//   });
-
-//   // Most read theme
-//   const THEMES_MOCK = [
-//     { id: "prophets", surahIds: [2, 3, 6, 7, 10, 11, 12, 14, 15, 19, 20, 21, 26, 27, 28, 37, 38, 71] },
-//     { id: "afterlife", surahIds: [22, 36, 39, 50, 55, 56, 67, 69, 75, 78, 81, 82, 83, 84, 99, 101] },
-//     { id: "aqeedah", surahIds: [1, 6, 13, 16, 25, 31, 35, 40, 41, 42, 50, 51, 52, 53, 87, 112, 113, 114] },
-//     { id: "ethics", surahIds: [17, 23, 24, 49, 60, 68, 80, 83, 90, 103, 107] },
-//     { id: "legislation", surahIds: [2, 4, 5, 8, 9, 24, 33, 60, 65] },
-//   ];
-
-//   const themeCounts: Record<string, number> = {};
-//   Object.entries(surahCounts).forEach(([surahId, count]) => {
-//     const sId = parseInt(surahId);
-//     THEMES_MOCK.forEach(theme => {
-//       if (theme.surahIds.includes(sId)) {
-//         themeCounts[theme.id] = (themeCounts[theme.id] || 0) + count;
-//       }
-//     });
-//   });
-
-//   let mostReadThemeId = null;
-//   let maxThemeCount = 0;
-//   Object.entries(themeCounts).forEach(([id, count]) => {
-//     if (count > maxThemeCount) {
-//       maxThemeCount = count;
-//       mostReadThemeId = id;
-//     }
-//   });
-
-//   // Calculate current streak
-//   let checkDate = today;
-//   if (!activityDates.has(today.toISODate())) {
-//     checkDate = yesterday;
-//   }
-
-//   while (activityDates.has(checkDate.toISODate())) {
-//     currentStreak++;
-//     checkDate = checkDate.minus({ days: 1 });
-//   }
-
-//   // Calculate longest streak
-//   const sortedUniqueDates = Array.from(activityDates)
-//     .map((d) => DateTime.fromISO(d!))
-//     .sort((a, b) => a.toMillis() - b.toMillis());
-
-//   if (sortedUniqueDates.length > 0) {
-//     tempStreak = 1;
-//     longestStreak = 1;
-//     for (let i = 1; i < sortedUniqueDates.length; i++) {
-//       const diff = sortedUniqueDates[i].diff(sortedUniqueDates[i - 1], "days").days;
-//       if (diff === 1) {
-//         tempStreak++;
-//       } else {
-//         tempStreak = 1;
-//       }
-//       longestStreak = Math.max(longestStreak, tempStreak);
-//     }
-//   }
-
-//   const firstActivityDate = sortedUniqueDates[0] || today;
-//   const daysSinceStart = Math.max(1, today.diff(firstActivityDate, "days").days + 1);
-//   const consistencyPercentage = Math.round((activityDates.size / daysSinceStart) * 100);
-
-//   const heatmapData = activities.map((a) => ({
-//     date: a.date.replace(/-/g, "/"), // react-heat-map expects yyyy/mm/dd
-//     count: Math.ceil(a.pagesRead || 0),
-//     pages: a.pagesRead || 0,
-//     minutes: Math.round((a.secondsRead || 0) / 60),
-//   }));
-
-//   const achievements = [
-//     {
-//       id: "firstDay",
-//       isUnlocked: activityDates.size >= 1,
-//       progress: Math.min(activityDates.size, 1),
-//     },
-//     {
-//       id: "streak7",
-//       isUnlocked: longestStreak >= 7,
-//       progress: Math.min((longestStreak / 7) * 100, 100),
-//     },
-//     {
-//       id: "streak30",
-//       isUnlocked: longestStreak >= 30,
-//       progress: Math.min((longestStreak / 30) * 100, 100),
-//     },
-//     {
-//       id: "pages100",
-//       isUnlocked: totalPagesRead >= 100,
-//       progress: Math.min((totalPagesRead / 100) * 100, 100),
-//     },
-//   ];
-
-//   return {
-//     currentStreak,
-//     longestStreak,
-//     totalReadingDays: activityDates.size,
-//     totalPagesRead,
-//     totalVersesRead,
-//     totalSecondsRead,
-//     consistencyPercentage,
-//     isReadToday: activityDates.has(today.toISODate()),
-//     heatmapData,
-//     achievements,
-//     insights: {
-//       mostReadSurahId,
-//       mostReadThemeId,
-//     },
-//   };
-// }
-
 const EMPTY_JOURNEY_STATS: JourneyStats = {
   currentStreak: 0,
   longestStreak: 0,
@@ -541,3 +370,43 @@ export const clearJourneyYearCache = (userId?: string) => {
     }
   });
 };
+
+const WORDS_PER_MINUTE = 130;
+
+function countWordsInVerse(verse: Verse): number {
+  // Fast path: use pre-parsed words array
+  const words = verse.words;
+
+  if (words?.length) {
+    let count = 0;
+
+    for (const word of words) {
+      if (!word.char_type_name || word.char_type_name === "word") {
+        count++;
+      }
+    }
+
+    if (count > 0) return count;
+  }
+
+  // Fallback to text fields
+  const text =
+    verse.text_uthmani ??
+    verse.qpc_uthmani_hafs ??
+    "";
+
+  if (!text.trim()) return 0;
+
+  return text.trim().split(/\s+/).length;
+}
+
+export function calculateReadingTime(verses: Verse[]): number {
+  let totalWords = 0;
+
+  for (const verse of verses) {
+    totalWords += countWordsInVerse(verse);
+  }
+
+  // Convert minutes to seconds
+  return Math.round((totalWords * 60) / WORDS_PER_MINUTE);
+}
