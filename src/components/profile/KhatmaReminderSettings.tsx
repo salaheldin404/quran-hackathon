@@ -12,12 +12,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 
 import type { KhatmaReminderForm } from "@/types/profile";
 import { formatTime } from "@/lib/utils/profile";
+import InputTime from "./InputTime";
 
 type KhatmaReminderSettingsProps = {
   khatmaReminder: KhatmaReminderForm;
@@ -68,17 +68,12 @@ export default function KhatmaReminderSettings({
 
         <div className="space-y-3">
           <Label htmlFor="khatma-time">{t("khatmaReminder.timeLabel")}</Label>
-          <Input
+          <InputTime
             id="khatma-time"
-            type="time"
             value={khatmaReminder.time}
-            onChange={(event) => {
-              setKhatmaReminder((current) => ({
-                ...current,
-                time: event.target.value,
-              }));
-            }}
-            className="h-11 rounded-xl"
+            onChange={(value) =>
+              setKhatmaReminder((current) => ({ ...current, time: value }))
+            }
           />
         </div>
 

@@ -20,6 +20,7 @@ import { useDebounce } from "@uidotdev/usehooks";
 import { useSurahSearch } from "@/hooks/useSurahSearch";
 import quranData from "@/data/all-quran-surah.json";
 import { DAY_KEYS, formatTime, sortDays } from "@/lib/utils/profile";
+import InputTime from "./InputTime";
 interface ReminderComposerProps {
   isEditing: boolean;
   reminderLimitReached: boolean;
@@ -209,14 +210,10 @@ const ReminderComposer = ({
         <div className="grid gap-5 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
           <div className="space-y-3">
             <Label htmlFor="quran-time">{t("quranReminder.timeLabel")}</Label>
-            <Input
+            <InputTime
               id="quran-time"
-              type="time"
               value={draftReminder.time}
-              onChange={(event) =>
-                onChange({ ...draftReminder, time: event.target.value })
-              }
-              className="h-11 rounded-xl"
+              onChange={(value) => onChange({ ...draftReminder, time: value })}
             />
           </div>
 
