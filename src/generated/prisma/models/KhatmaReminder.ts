@@ -32,7 +32,6 @@ export type KhatmaReminderMinAggregateOutputType = {
   isEnabled: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
-  nextReminderAt: Date | null
 }
 
 export type KhatmaReminderMaxAggregateOutputType = {
@@ -43,7 +42,6 @@ export type KhatmaReminderMaxAggregateOutputType = {
   isEnabled: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
-  nextReminderAt: Date | null
 }
 
 export type KhatmaReminderCountAggregateOutputType = {
@@ -54,7 +52,6 @@ export type KhatmaReminderCountAggregateOutputType = {
   isEnabled: number
   createdAt: number
   updatedAt: number
-  nextReminderAt: number
   _all: number
 }
 
@@ -67,7 +64,6 @@ export type KhatmaReminderMinAggregateInputType = {
   isEnabled?: true
   createdAt?: true
   updatedAt?: true
-  nextReminderAt?: true
 }
 
 export type KhatmaReminderMaxAggregateInputType = {
@@ -78,7 +74,6 @@ export type KhatmaReminderMaxAggregateInputType = {
   isEnabled?: true
   createdAt?: true
   updatedAt?: true
-  nextReminderAt?: true
 }
 
 export type KhatmaReminderCountAggregateInputType = {
@@ -89,7 +84,6 @@ export type KhatmaReminderCountAggregateInputType = {
   isEnabled?: true
   createdAt?: true
   updatedAt?: true
-  nextReminderAt?: true
   _all?: true
 }
 
@@ -173,7 +167,6 @@ export type KhatmaReminderGroupByOutputType = {
   isEnabled: boolean
   createdAt: Date
   updatedAt: Date
-  nextReminderAt: Date | null
   _count: KhatmaReminderCountAggregateOutputType | null
   _min: KhatmaReminderMinAggregateOutputType | null
   _max: KhatmaReminderMaxAggregateOutputType | null
@@ -205,7 +198,6 @@ export type KhatmaReminderWhereInput = {
   isEnabled?: Prisma.BoolFilter<"KhatmaReminder"> | boolean
   createdAt?: Prisma.DateTimeFilter<"KhatmaReminder"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"KhatmaReminder"> | Date | string
-  nextReminderAt?: Prisma.DateTimeNullableFilter<"KhatmaReminder"> | Date | string | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
 
@@ -217,7 +209,6 @@ export type KhatmaReminderOrderByWithRelationInput = {
   isEnabled?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  nextReminderAt?: Prisma.SortOrderInput | Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
 }
 
@@ -232,7 +223,6 @@ export type KhatmaReminderWhereUniqueInput = Prisma.AtLeast<{
   isEnabled?: Prisma.BoolFilter<"KhatmaReminder"> | boolean
   createdAt?: Prisma.DateTimeFilter<"KhatmaReminder"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"KhatmaReminder"> | Date | string
-  nextReminderAt?: Prisma.DateTimeNullableFilter<"KhatmaReminder"> | Date | string | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id" | "userId">
 
@@ -244,7 +234,6 @@ export type KhatmaReminderOrderByWithAggregationInput = {
   isEnabled?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  nextReminderAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.KhatmaReminderCountOrderByAggregateInput
   _max?: Prisma.KhatmaReminderMaxOrderByAggregateInput
   _min?: Prisma.KhatmaReminderMinOrderByAggregateInput
@@ -261,7 +250,6 @@ export type KhatmaReminderScalarWhereWithAggregatesInput = {
   isEnabled?: Prisma.BoolWithAggregatesFilter<"KhatmaReminder"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"KhatmaReminder"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"KhatmaReminder"> | Date | string
-  nextReminderAt?: Prisma.DateTimeNullableWithAggregatesFilter<"KhatmaReminder"> | Date | string | null
 }
 
 export type KhatmaReminderCreateInput = {
@@ -271,7 +259,6 @@ export type KhatmaReminderCreateInput = {
   isEnabled?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  nextReminderAt?: Date | string | null
   user: Prisma.UserCreateNestedOneWithoutKhatmaRemindersInput
 }
 
@@ -283,7 +270,6 @@ export type KhatmaReminderUncheckedCreateInput = {
   isEnabled?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  nextReminderAt?: Date | string | null
 }
 
 export type KhatmaReminderUpdateInput = {
@@ -293,7 +279,6 @@ export type KhatmaReminderUpdateInput = {
   isEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  nextReminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutKhatmaRemindersNestedInput
 }
 
@@ -305,7 +290,6 @@ export type KhatmaReminderUncheckedUpdateInput = {
   isEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  nextReminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type KhatmaReminderCreateManyInput = {
@@ -316,7 +300,6 @@ export type KhatmaReminderCreateManyInput = {
   isEnabled?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  nextReminderAt?: Date | string | null
 }
 
 export type KhatmaReminderUpdateManyMutationInput = {
@@ -326,7 +309,6 @@ export type KhatmaReminderUpdateManyMutationInput = {
   isEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  nextReminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type KhatmaReminderUncheckedUpdateManyInput = {
@@ -337,7 +319,6 @@ export type KhatmaReminderUncheckedUpdateManyInput = {
   isEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  nextReminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type KhatmaReminderListRelationFilter = {
@@ -358,7 +339,6 @@ export type KhatmaReminderCountOrderByAggregateInput = {
   isEnabled?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  nextReminderAt?: Prisma.SortOrder
 }
 
 export type KhatmaReminderMaxOrderByAggregateInput = {
@@ -369,7 +349,6 @@ export type KhatmaReminderMaxOrderByAggregateInput = {
   isEnabled?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  nextReminderAt?: Prisma.SortOrder
 }
 
 export type KhatmaReminderMinOrderByAggregateInput = {
@@ -380,7 +359,6 @@ export type KhatmaReminderMinOrderByAggregateInput = {
   isEnabled?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  nextReminderAt?: Prisma.SortOrder
 }
 
 export type KhatmaReminderCreateNestedManyWithoutUserInput = {
@@ -432,7 +410,6 @@ export type KhatmaReminderCreateWithoutUserInput = {
   isEnabled?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  nextReminderAt?: Date | string | null
 }
 
 export type KhatmaReminderUncheckedCreateWithoutUserInput = {
@@ -442,7 +419,6 @@ export type KhatmaReminderUncheckedCreateWithoutUserInput = {
   isEnabled?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  nextReminderAt?: Date | string | null
 }
 
 export type KhatmaReminderCreateOrConnectWithoutUserInput = {
@@ -482,7 +458,6 @@ export type KhatmaReminderScalarWhereInput = {
   isEnabled?: Prisma.BoolFilter<"KhatmaReminder"> | boolean
   createdAt?: Prisma.DateTimeFilter<"KhatmaReminder"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"KhatmaReminder"> | Date | string
-  nextReminderAt?: Prisma.DateTimeNullableFilter<"KhatmaReminder"> | Date | string | null
 }
 
 export type KhatmaReminderCreateManyUserInput = {
@@ -492,7 +467,6 @@ export type KhatmaReminderCreateManyUserInput = {
   isEnabled?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
-  nextReminderAt?: Date | string | null
 }
 
 export type KhatmaReminderUpdateWithoutUserInput = {
@@ -502,7 +476,6 @@ export type KhatmaReminderUpdateWithoutUserInput = {
   isEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  nextReminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type KhatmaReminderUncheckedUpdateWithoutUserInput = {
@@ -512,7 +485,6 @@ export type KhatmaReminderUncheckedUpdateWithoutUserInput = {
   isEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  nextReminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type KhatmaReminderUncheckedUpdateManyWithoutUserInput = {
@@ -522,7 +494,6 @@ export type KhatmaReminderUncheckedUpdateManyWithoutUserInput = {
   isEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  nextReminderAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -535,7 +506,6 @@ export type KhatmaReminderSelect<ExtArgs extends runtime.Types.Extensions.Intern
   isEnabled?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  nextReminderAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["khatmaReminder"]>
 
@@ -547,7 +517,6 @@ export type KhatmaReminderSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   isEnabled?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  nextReminderAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["khatmaReminder"]>
 
@@ -559,7 +528,6 @@ export type KhatmaReminderSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   isEnabled?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  nextReminderAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["khatmaReminder"]>
 
@@ -571,10 +539,9 @@ export type KhatmaReminderSelectScalar = {
   isEnabled?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  nextReminderAt?: boolean
 }
 
-export type KhatmaReminderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "time" | "timezone" | "isEnabled" | "createdAt" | "updatedAt" | "nextReminderAt", ExtArgs["result"]["khatmaReminder"]>
+export type KhatmaReminderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "time" | "timezone" | "isEnabled" | "createdAt" | "updatedAt", ExtArgs["result"]["khatmaReminder"]>
 export type KhatmaReminderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -598,7 +565,6 @@ export type $KhatmaReminderPayload<ExtArgs extends runtime.Types.Extensions.Inte
     isEnabled: boolean
     createdAt: Date
     updatedAt: Date
-    nextReminderAt: Date | null
   }, ExtArgs["result"]["khatmaReminder"]>
   composites: {}
 }
@@ -1030,7 +996,6 @@ export interface KhatmaReminderFieldRefs {
   readonly isEnabled: Prisma.FieldRef<"KhatmaReminder", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"KhatmaReminder", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"KhatmaReminder", 'DateTime'>
-  readonly nextReminderAt: Prisma.FieldRef<"KhatmaReminder", 'DateTime'>
 }
     
 

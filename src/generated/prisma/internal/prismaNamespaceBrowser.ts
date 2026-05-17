@@ -114,8 +114,7 @@ export const ReminderScalarFieldEnum = {
   days: 'days',
   isEnabled: 'isEnabled',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  nextReminderAt: 'nextReminderAt'
+  updatedAt: 'updatedAt'
 } as const
 
 export type ReminderScalarFieldEnum = (typeof ReminderScalarFieldEnum)[keyof typeof ReminderScalarFieldEnum]
@@ -128,8 +127,7 @@ export const KhatmaReminderScalarFieldEnum = {
   timezone: 'timezone',
   isEnabled: 'isEnabled',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  nextReminderAt: 'nextReminderAt'
+  updatedAt: 'updatedAt'
 } as const
 
 export type KhatmaReminderScalarFieldEnum = (typeof KhatmaReminderScalarFieldEnum)[keyof typeof KhatmaReminderScalarFieldEnum]
