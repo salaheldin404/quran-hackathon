@@ -32,8 +32,8 @@ import { toArabicNumber } from "@/lib/utils/surah";
 
 import useReaderCarousel from "@/hooks/useReaderCarousel";
 import ReaderPageHeader from "@/components/surah/ReaderPageHeader";
-import { formatActivityRanges } from "@/lib/utils/activity";
-import { useAddActivityDayMutation } from "@/lib/store/features/activityApi";
+
+import { useQuranActivityTracker } from "@/hooks/useQuranActivityTracker";
 
 interface SurahClientPageProps {
   initialSurah: Surah;
@@ -52,9 +52,10 @@ const SurahClientPage = ({ initialSurah, locale }: SurahClientPageProps) => {
   const dispatch = useAppDispatch();
   const t = useTranslations("Surah");
   const t2 = useTranslations("SurahPage");
-  const [groupedVerses, setGroupedVerses] = useState<Record<string, Verse[]>>(
+  const [groupedVerses, setGroupedVerses] = useState<Record<number, Verse[]>>(
     {},
   );
+
   const numericId = Number(id);
 
   const [activeTab, setActiveTab] = useState("reading");
@@ -66,6 +67,7 @@ const SurahClientPage = ({ initialSurah, locale }: SurahClientPageProps) => {
       per_page: "all",
       translations: "131,85",
       translation_fields: "resource_name,language_id",
+      words: "true",
     });
     return params.toString();
   }, []);
@@ -80,15 +82,18 @@ const SurahClientPage = ({ initialSurah, locale }: SurahClientPageProps) => {
       refetchOnMountOrArgChange: true,
     },
   );
-  const [addActivityDay] = useAddActivityDayMutation();
   const { handleNextSurah, handlePreviousSurah, navigationState } =
     useSurahNavigation(numericId);
 
   const readingPages = useMemo(
-    () => Object.keys(groupedVerses),
+    () => Object.keys(groupedVerses).map(Number),
     [groupedVerses],
   );
-
+  const { trackCurrentPage } = useQuranActivityTracker({
+    user,
+    readingPages,
+    groupedVerses,
+  });
   const {
     emblaRef: readingCarouselRef,
     emblaApi: readingCarouselApi,
@@ -102,36 +107,14 @@ const SurahClientPage = ({ initialSurah, locale }: SurahClientPageProps) => {
     slideCount: readingPages.length,
     isRTL,
     preloadAdjacentSlides: false,
-    onReadingPageChange: async ({ previousIndex, secondsSpent }) => {
-      if (!user) return; // Don't track activity if user is not logged in
-      const isWindowFocused =
-        typeof document !== "undefined" && document.hasFocus();
-
-      if (secondsSpent >= 50 && isWindowFocused) {
-        const previousPage = readingPages[previousIndex];
-        const versesOnPreviousPage = groupedVerses[previousPage] ?? [];
-        const activityRanges = formatActivityRanges(versesOnPreviousPage);
-        if (activityRanges) {
-          // const date = DateTime.utc().toFormat("yyyy-MM-dd");
-          try {
-            await addActivityDay({
-              type: "QURAN",
-              seconds: secondsSpent,
-              ranges: [activityRanges],
-              mushafId: 4,
-            }).unwrap();
-            // clearJourneyYearCache(user.id);
-          } catch (error) {
-            console.error("Failed to save activity:", error);
-          }
-        }
-      }
+    onPageChange: ({ currentIndex }) => {
+      trackCurrentPage(currentIndex);
     },
   });
 
   const currentReaderPage = readingPages[selectedPageIndex] ?? readingPages[0];
   const currentPageVerses = currentReaderPage
-    ? (groupedVerses[currentReaderPage] ?? [])
+    ? (groupedVerses[Number(currentReaderPage)] ?? [])
     : [];
   const currentPageAnchorVerse = currentPageVerses[0];
   const isCurrentPageSaved =
@@ -202,7 +185,7 @@ const SurahClientPage = ({ initialSurah, locale }: SurahClientPageProps) => {
 
     if (!targetPage) return;
 
-    const targetIndex = readingPages.indexOf(String(targetPage));
+    const targetIndex = readingPages.indexOf(Number(targetPage));
     if (targetIndex >= 0) {
       readingCarouselApi.scrollTo(targetIndex, true);
     }
@@ -216,13 +199,6 @@ const SurahClientPage = ({ initialSurah, locale }: SurahClientPageProps) => {
     versesData?.verses,
   ]);
 
-  useEffect(() => {
-    if (readingCarouselApi) {
-      readingCarouselApi.on("select", () => {
-        console.log("slidesChanged event triggered");
-      });
-    }
-  }, [readingCarouselApi]);
 
   if (!surah) {
     return (
@@ -314,7 +290,7 @@ const SurahClientPage = ({ initialSurah, locale }: SurahClientPageProps) => {
                             aria-roledescription="slide"
                             aria-label={
                               locale === "ar"
-                                ? `صفحة ${toArabicNumber(Number(pageNumber))}`
+                                ? `صفحة ${toArabicNumber(pageNumber)}`
                                 : `Page ${pageNumber}`
                             }
                           >
