@@ -14,9 +14,9 @@ import { Button } from "../ui/button";
 import DotIndicators from "./DotIndicators";
 import ReaderPageHeader from "../surah/ReaderPageHeader";
 import useReaderCarousel from "@/hooks/useReaderCarousel";
-import { useAddActivityDayMutation } from "@/lib/store/features/activityApi";
-import { formatActivityRanges } from "@/lib/utils/activity";
 import { Verse } from "@/types/verse";
+import { useQuranActivityTracker } from "@/hooks/useQuranActivityTracker";
+import { groupVersesByPage } from "@/lib/utils/verse";
 
 interface KhatmaReaderCarouselProps {
   start: number;
@@ -40,56 +40,20 @@ const KhatmaReaderCarousel = ({ start, end }: KhatmaReaderCarouselProps) => {
     (state) => state.khatma.khatmaBookmarkIndex,
   );
 
-  const [addActivityDay] = useAddActivityDayMutation();
-
   const pages = useMemo(
     () => Array.from({ length: end - start + 1 }, (_, i) => start + i),
     [start, end],
   );
 
-  // Store verses data for each page to enable activity tracking
-  const [pageVersesMap, setPageVersesMap] = useState(
-    new Map<number, Verse[]>(),
+  const [groupedVerses, setGroupedVerses] = useState<Record<number, Verse[]>>(
+    {},
   );
-
-  const handleVersesLoaded = useCallback((pageNumber: number, verses: Verse[]) => {
-    setPageVersesMap((prev) => {
-      const updated = new Map(prev);
-      updated.set(pageNumber, verses);
-      return updated;
-    });
-  }, []);
-
-  const handleReadingPageChange = useCallback(
-    async ({ previousIndex, secondsSpent }: { previousIndex: number; secondsSpent: number }) => {
-      if (!user) return; // Don't track activity if user is not logged in
-      
-      const isWindowFocused =
-        typeof document !== "undefined" && document.hasFocus();
-
-      if (secondsSpent >= 50 && isWindowFocused) {
-        const previousPage = pages[previousIndex];
-        const versesOnPreviousPage = pageVersesMap.get(previousPage) ?? [];
-        
-        if (versesOnPreviousPage.length > 0) {
-          const activityRanges = formatActivityRanges(versesOnPreviousPage);
-          if (activityRanges) {
-            try {
-              await addActivityDay({
-                type: "QURAN",
-                seconds: secondsSpent,
-                ranges: [activityRanges],
-                mushafId: 4,
-              }).unwrap();
-            } catch (error) {
-              console.error("Failed to save activity:", error);
-            }
-          }
-        }
-      }
-    },
-    [user, pages, pageVersesMap, addActivityDay],
-  );
+  const readingPages = pages;
+  const { trackCurrentPage } = useQuranActivityTracker({
+    user,
+    readingPages,
+    groupedVerses,
+  });
 
   const {
     emblaRef,
@@ -104,8 +68,36 @@ const KhatmaReaderCarousel = ({ start, end }: KhatmaReaderCarouselProps) => {
     slideCount: pages.length,
     isRTL,
     initialIndex: storeSlideIndex,
-    onReadingPageChange: handleReadingPageChange,
+    onPageChange: ({ currentIndex }) => {
+      const currentPage = pages[currentIndex];
+
+      if (groupedVerses[currentPage]) {
+        trackCurrentPage(currentIndex);
+      }
+    },
   });
+  const handleVersesLoaded = useCallback((verses: Verse[]) => {
+    const incoming = groupVersesByPage(verses);
+
+    setGroupedVerses((prev) => {
+      let changed = false;
+
+      const next = { ...prev };
+
+      for (const key in incoming) {
+        /**
+         * Prevent useless rerenders
+         */
+        if (!next[Number(key)]) {
+          next[Number(key)] = incoming[Number(key)];
+
+          changed = true;
+        }
+      }
+
+      return changed ? next : prev;
+    });
+  }, []);
   const isCurrentBookmark = storeSlideIndex === selectedIndex;
   const isLastSlide = selectedIndex === pages.length - 1;
 
@@ -115,6 +107,7 @@ const KhatmaReaderCarousel = ({ start, end }: KhatmaReaderCarouselProps) => {
         fields:
           "qpc_uthmani_hafs,page_number,juz_number,hizb_number,verse_key,verse_number,chapter_id,audio",
         per_page: "50",
+        // words: "true",
       }).toString(),
     [],
   );
@@ -229,9 +222,7 @@ const KhatmaReaderCarousel = ({ start, end }: KhatmaReaderCarouselProps) => {
                     shouldFetch={fetchedSlides.has(index)}
                     params={params}
                     onVerseHighlighted={() => scrollTo(index)}
-                    onVersesLoaded={(verses) =>
-                      handleVersesLoaded(pageNumber, verses)
-                    }
+                    onVersesLoaded={(verses) => handleVersesLoaded(verses)}
                   />
                 </div>
               </div>

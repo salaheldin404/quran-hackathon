@@ -9,7 +9,7 @@ import {  useAppSelector } from "@/lib/store/hooks";
 import { useFont } from "@/hooks/useFont";
 
 interface ReadingContentProps {
-  pageNumber: string;
+  pageNumber: number;
   verses: Verse[];
   locale: string;
   surah: Surah;

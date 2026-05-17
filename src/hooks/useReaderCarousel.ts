@@ -16,11 +16,7 @@ export interface UseReaderCarouselOptions {
   keyboardNavigation?: boolean;
   preloadAdjacentSlides?: boolean;
   emblaOptions?: EmblaOptionsType;
-  onReadingPageChange?: (params: {
-    previousIndex: number;
-    currentIndex: number;
-    secondsSpent: number;
-  }) => void;
+  onPageChange?: ({ currentIndex }: { currentIndex: number }) => void;
 }
 
 export interface UseReaderCarouselReturn {
@@ -44,7 +40,7 @@ const useReaderCarousel = ({
   keyboardNavigation = true,
   preloadAdjacentSlides = true,
   emblaOptions,
-  onReadingPageChange,
+  onPageChange,
 }: UseReaderCarouselOptions): UseReaderCarouselReturn => {
   const safeInitialIndex = clampReaderCarouselIndex(initialIndex, slideCount);
   const [selectedIndex, setSelectedIndex] = useState(safeInitialIndex);
@@ -58,8 +54,7 @@ const useReaderCarousel = ({
     }),
   );
   const isInitialScrollDone = useRef(false);
-  const previousIndexRef = useRef(safeInitialIndex);
-  const pageEnterTimeRef = useRef(Date.now());
+  const isPageInitiallyVisible = useRef(false); // Track if the page is initially visible
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
     ...DEFAULT_READER_CAROUSEL_OPTIONS,
@@ -95,22 +90,14 @@ const useReaderCarousel = ({
 
   const onSelect = useCallback(
     (api: EmblaCarouselType) => {
-      const currentIndex = api.selectedScrollSnap();
-      const previousIndex = previousIndexRef.current;
-      const secondsSpent = Math.floor(
-        (Date.now() - pageEnterTimeRef.current) / 1000,
-      );
+      isPageInitiallyVisible.current = true; // Mark the page as visible on first select event
+
       setSelectedIndex(api.selectedScrollSnap());
       setCanScrollPrev(api.canScrollPrev());
       setCanScrollNext(api.canScrollNext());
-
-      if (currentIndex !== previousIndex) {
-        onReadingPageChange?.({ previousIndex, currentIndex, secondsSpent });
-      }
-      previousIndexRef.current = currentIndex;
-      pageEnterTimeRef.current = Date.now();
+      onPageChange?.({ currentIndex: api.selectedScrollSnap() });
     },
-    [onReadingPageChange],
+    [onPageChange],
   );
 
   useEffect(() => {
