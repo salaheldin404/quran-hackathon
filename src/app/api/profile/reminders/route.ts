@@ -1,16 +1,15 @@
 import { requireUser } from "@/lib/oauth/auth";
 import { NextResponse } from "next/server";
 
-
 import { prisma } from "@/lib/prisma";
 import {
   profileReminderSchema,
   QuranReminderInput,
 } from "@/lib/validations/reminderSchema";
 import { normalizeDays } from "@/lib/utils/profile";
+import { calculateNextReminderAt } from "@/lib/notifications";
 
 const MAX_QURAN_REMINDERS = 5;
-
 
 function normalizeTimezone(timezone?: string) {
   return typeof timezone === "string" && timezone.trim().length > 0
@@ -32,43 +31,65 @@ function serverError(error: unknown, message: string) {
 }
 
 function buildReminderData(reminder: QuranReminderInput, timezone: string) {
+  const nextReminderAt = reminder.isEnabled
+    ? calculateNextReminderAt(reminder.time, timezone, reminder.days)
+    : null;
   return {
     surahId: reminder.surahId,
     time: reminder.time,
     timezone,
     days: normalizeDays(reminder.days),
     isEnabled: reminder.isEnabled,
+    nextReminderAt,
   };
 }
+function buildKhatmaReminderData(
+  reminder: {
+    time: string;
+    isEnabled: boolean;
+  },
+  timezone: string,
+) {
+  const nextReminderAt = reminder.isEnabled
+    ? calculateNextReminderAt(reminder.time, timezone, [])
+    : null;
 
+  return {
+    time: reminder.time,
+    timezone,
+    isEnabled: reminder.isEnabled,
+    nextReminderAt,
+  };
+}
 export async function GET() {
   try {
     const user = await requireUser();
     const userId = user.id;
 
-    const [userData, quranReminders, khatmaReminder] = await prisma.$transaction([
-      prisma.user.findUnique({
-        where: { id: userId },
-        select: {
-          firstName: true,
-          lastName: true,
-          email: true,
-          createdAt: true,
-          _count: {
-            select: {
-              pushSubscriptions: true,
+    const [userData, quranReminders, khatmaReminder] =
+      await prisma.$transaction([
+        prisma.user.findUnique({
+          where: { id: userId },
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+            createdAt: true,
+            _count: {
+              select: {
+                pushSubscriptions: true,
+              },
             },
           },
-        },
-      }),
-      prisma.reminder.findMany({
-        where: { userId },
-        orderBy: [{ createdAt: "asc" }, { updatedAt: "asc" }],
-      }),
-      prisma.khatmaReminder.findUnique({
-        where: { userId },
-      }),
-    ]);
+        }),
+        prisma.reminder.findMany({
+          where: { userId },
+          orderBy: [{ createdAt: "asc" }, { updatedAt: "asc" }],
+        }),
+        prisma.khatmaReminder.findUnique({
+          where: { userId },
+        }),
+      ]);
 
     if (!userData) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
@@ -154,11 +175,7 @@ export async function PUT(request: Request) {
         savedQuranReminders.push(saved);
       }
 
-      const khatmaData = {
-        time: khatmaReminder.time,
-        timezone,
-        isEnabled: khatmaReminder.isEnabled,
-      };
+      const khatmaData = buildKhatmaReminderData(khatmaReminder, timezone);
       const savedKhatmaReminder = await tx.khatmaReminder.upsert({
         where: { userId },
         update: khatmaData,
