@@ -75,6 +75,7 @@ model UserSettings {
   fontStyle         String            @default("uthmani")
   fontSize          Int               @default(3)
   ayahNumberStyle   String            @default("ayah-2")
+  language          String            @default("ar")
   lastReadAt        DateTime?
   lastPlayedSurahId Int?
   lastPlayedAt      DateTime?
