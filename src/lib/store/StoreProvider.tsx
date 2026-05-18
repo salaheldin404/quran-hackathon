@@ -6,7 +6,7 @@ import { ReactNode, useEffect } from "react";
 import { KhatmaPlan } from "@/types/khatma";
 import { setKhatmaData } from "./slices/khatma-slice";
 import { getKhatmaRange } from "../utils/khatma";
-import { setUser } from "./slices/sync-slice";
+import { setUser, UserSync } from "./slices/sync-slice";
 
 const StoreProvider = ({
   children,
@@ -15,13 +15,7 @@ const StoreProvider = ({
 }: {
   children: ReactNode;
   initialKhatma: KhatmaPlan | null;
-  user: {
-    id: string;
-    createdAt: string;
-    email: string | null;
-    firstName: string | null;
-    lastName: string | null;
-  } | null;
+  user: UserSync| null;
 }) => {
   useEffect(() => {
     store.dispatch(setUser(user));
