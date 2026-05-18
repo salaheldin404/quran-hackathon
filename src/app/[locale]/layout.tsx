@@ -51,7 +51,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = (await params) as { locale: "en" | "ar" };
-  const baseUrl = "https://skinah-streams.vercel.app";
+  const baseUrl = process.env.SITE_URL!
 
   const commonMetadata: Metadata = {
     metadataBase: new URL(baseUrl),
@@ -176,7 +176,7 @@ export default async function RootLayout({
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: "Sakinah Streams",
-    url: "https://skinah-streams.vercel.app",
+    url: process.env.SITE_URL,
   };
   return (
     <html
