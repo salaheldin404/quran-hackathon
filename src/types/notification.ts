@@ -4,6 +4,9 @@ type NotificationUser = {
     id: string;
     token: string;
   }[];
+  settings?: {
+    language: string;
+  } | null;
 };
 
 export type ReminderWithUser = {
