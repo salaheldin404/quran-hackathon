@@ -248,6 +248,8 @@
   "Khatma": {
     "title": "Khatma Planner",
     "description": "Plan and track your Quran completion journey. Set daily reading goals and stay motivated.",
+    "completedKhatmasLabel": "Completed Khatmas",
+    "lifetimeTotal": "Lifetime total",
     "createNewPlan": "Create New Plan",
     "createPlanDescription": "Start your journey to complete the Holy Quran. Set your daily goal and we'll calculate the rest.",
     "planTitle": "Plan Name",
@@ -507,16 +509,57 @@
       "subtitle": "Celebrating your dedication and spiritual milestones",
       "locked": "Locked",
       "unlocked": "Unlocked",
+
       "firstDay": "First Step",
       "firstDayDesc": "Your very first day of reading",
+
+      "readingDays7": "Weekly Companion",
+      "readingDays7Desc": "Read on 7 different days",
+
+      "readingDays30": "Faithful Reader",
+      "readingDays30Desc": "Read on 30 different days",
+
+      "readingDays100": "Century of Devotion",
+      "readingDays100Desc": "Read on 100 different days",
+
+      "streak3": "Rising Flame",
+      "streak3Desc": "Maintain a 3-day reading streak",
+
       "streak7": "Consistent Soul",
       "streak7Desc": "Maintain a 7-day reading streak",
+
+      "streak14": "Steadfast Spirit",
+      "streak14Desc": "Maintain a 14-day reading streak",
+
       "streak30": "Devoted Heart",
       "streak30Desc": "Maintain a 30-day reading streak",
+
+      "streak90": "Unbreakable Light",
+      "streak90Desc": "Maintain a 90-day reading streak",
+
+      "pages10": "Opening Pages",
+      "pages10Desc": "Read 10 pages in total",
+
+      "pages50": "Path of Knowledge",
+      "pages50Desc": "Read 50 pages in total",
+
       "pages100": "Century of Wisdom",
       "pages100Desc": "Read 100 pages in total",
-      "khatma": "Khatma Finisher",
-      "khatmaDesc": "Complete your first Khatma plan"
+
+      "pages500": "Ocean of Reflection",
+      "pages500Desc": "Read 500 pages in total",
+
+      "pages604": "Keeper of Light",
+      "pages604Desc": "Read 604 pages in total",
+      
+      "khatma1": "First Khatma",
+      "khatma1Desc": "Complete your first full Quran Khatma",
+
+      "khatma3": "Companion of the Quran",
+      "khatma3Desc": "Complete 3 full Quran Khatmas",
+
+      "khatma5": "Heart of Reflection",
+      "khatma5Desc": "Complete 5 full Quran Khatmas"
     },
     "insights": {
       "title": "Personal Trends",
