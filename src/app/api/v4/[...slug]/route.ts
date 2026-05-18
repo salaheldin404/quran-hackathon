@@ -17,14 +17,9 @@ async function getAccessToken(): Promise<string | null> {
   const { clientId, clientSecret, tokenUrl } = getQfOAuthConfig();
   // Return cached token if it's still valid
   if (tokenCache.token && Date.now() < tokenCache.expiresAt) {
-    console.log("CACHE: Using server-cached access token.");
     return tokenCache.token;
   }
 
-  // --- Environment-Specific Configuration ---
-
-  // const tokenUrl = "https://oauth2.quran.foundation/oauth2/token";
-  
   if (!clientId || !clientSecret) {
     console.error(
       "SERVER_ERROR: Missing client credentials for the current environment.",
@@ -115,5 +110,4 @@ async function handler(
   }
 }
 
-// Export the handler for the HTTP methods you want to support
 export { handler as GET, handler as POST, handler as PUT, handler as DELETE };
