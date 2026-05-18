@@ -14,12 +14,11 @@ let tokenCache: TokenCache = {
 };
 
 async function getAccessToken(): Promise<string | null> {
-  const { clientId, clientSecret, tokenUrl } = getQfOAuthConfig();
+  const { clientId, clientSecret } = getQfOAuthConfig();
   // Return cached token if it's still valid
   if (tokenCache.token && Date.now() < tokenCache.expiresAt) {
     return tokenCache.token;
   }
-
   if (!clientId || !clientSecret) {
     console.error(
       "SERVER_ERROR: Missing client credentials for the current environment.",
@@ -28,7 +27,8 @@ async function getAccessToken(): Promise<string | null> {
   }
 
   const auth = Buffer.from(`${clientId}:${clientSecret}`).toString("base64");
-
+  const tokenUrl = "https://oauth2.quran.foundation/oauth2/token";
+  //  "https://prelive-oauth2.quran.foundation/oauth2/token";
   try {
     const response = await fetch(tokenUrl, {
       method: "POST",
