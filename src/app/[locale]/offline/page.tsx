@@ -1,8 +1,12 @@
-import OfflineExperience from "./_components/OfflineExperience";
+import dynamic from "next/dynamic";
 
-export function generateStaticParams() {
-  return [{ locale: "ar" }, { locale: "en" }];
-}
+const OfflineExperience = dynamic(
+  () => import("./_components/OfflineExperience"),
+  {
+    ssr: false,
+  },
+);
+
 export default function OfflinePage() {
   return <OfflineExperience />;
 }
