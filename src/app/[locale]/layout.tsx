@@ -13,6 +13,7 @@ import PlayerWrapper from "@/components/audio/PlayerWrapper";
 import { Toaster } from "@/components/ui/sonner";
 
 import SettingsHydrator from "@/components/SettingsHydrator";
+import LanguageRouteSync from "@/components/LanguageRouteSync";
 import { getSession } from "@/lib/oauth/auth";
 
 import { getKhatmaPlan } from "@/server/db/khatmaPlan";
@@ -209,12 +210,14 @@ export default async function RootLayout({
                     firstName: user.firstName,
                     lastName: user.lastName,
                     createdAt: user.createdAt.toISOString(),
+                    completedKhatmas: user.completedKhatmas,
                   }
                 : null
             }
           >
             <SettingsHydrator>
               <NextIntlClientProvider locale={locale}>
+                <LanguageRouteSync />
                 <Navbar />
                 {children}
                 {modal}

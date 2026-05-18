@@ -36,6 +36,12 @@ export class SettingsValidator {
       );
     }
 
+    // Language validation
+    const validLanguages = ["ar", "en"];
+    if (data.language && !validLanguages.includes(data.language)) {
+      throw new ValidationError(`Language must be one of: ${validLanguages.join(", ")}`);
+    }
+
     // Last read validation
     if (data.lastRead) {
       this.validateLastRead(data.lastRead);
