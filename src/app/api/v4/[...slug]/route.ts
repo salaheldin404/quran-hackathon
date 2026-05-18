@@ -76,8 +76,8 @@ async function handler(
       { status: 500 },
     );
   }
-  // const baseApiUrl = "https://apis.quran.foundation/content/api/v4/";
-  const baseApiUrl = "https://apis-prelive.quran.foundation/content/api/v4/";
+  const baseApiUrl = "https://apis.quran.foundation/content/api/v4/";
+  // const baseApiUrl = "https://apis-prelive.quran.foundation/content/api/v4/";
   const queryString = req.nextUrl.search;
 
   const apiUrl = `${baseApiUrl}${apiPath}${queryString}`;
