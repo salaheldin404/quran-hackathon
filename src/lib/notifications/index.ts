@@ -1,4 +1,4 @@
-import { KhatmaReminderWithUser, ReminderWithUser } from "@/types/notification";
+import { ReminderWithUser,KhatmaReminderWithUser } from "@/types/notification";
 import quranData from "@/data/all-quran-surah.json";
 import { prisma } from "@/lib/prisma";
 import { messaging } from "@/lib/firebase/admin";
@@ -24,7 +24,7 @@ async function pruneInvalidTokens(tokens: string[]): Promise<void> {
   });
 }
 
-export async function sendNotification(
+async function sendNotification(
   reminder: ReminderWithUser,
 ): Promise<SendResult> {
   const tokens = reminder.user.pushSubscriptions.map((sub) => sub.token);
@@ -40,10 +40,15 @@ export async function sendNotification(
       error: `Unknown surahId: ${reminder.surahId}`,
     };
   }
+  
+  const lang = reminder.user.settings?.language === "en" ? "en" : "ar";
+  
   const message = {
     notification: {
-      title: "تذكير بقراءة القرآن",
-      body: `حان وقت قراءة سورة ${surah.shortName} `,
+      title: lang === "en" ? "Quran Reading Reminder" : "تذكير بقراءة القرآن",
+      body: lang === "en" 
+        ? `Time to read Surah ${surah.englishName}`
+        : `حان وقت قراءة سورة ${surah.shortName} `,
     },
     data: {
       surahId: reminder.surahId.toString(),
@@ -77,7 +82,8 @@ export async function sendNotification(
   }
 }
 
-export async function sendKhatmaReminderNotification(
+
+async function sendKhatmaReminderNotification(
   reminder: KhatmaReminderWithUser,
 ): Promise<SendResult> {
   const tokens = reminder.user.pushSubscriptions.map((sub) => sub.token);
@@ -85,10 +91,14 @@ export async function sendKhatmaReminderNotification(
     return { reminderId: reminder.id, status: "skipped" };
   }
 
+  const lang = reminder.user.settings?.language === "en" ? "en" : "ar";
+
   const message = {
     notification: {
-      title: "تذكير بالختمة",
-      body: "حان وقت متابعة وردك اليومي من القرآن الكريم",
+      title: lang === "en" ? "Khatma Reminder" : "تذكير بالختمة",
+      body: lang === "en" 
+        ? "Time to continue your daily Quran reading"
+        : "حان وقت متابعة وردك اليومي من القرآن الكريم",
     },
     data: {
       url: "/khatma",
@@ -98,7 +108,7 @@ export async function sendKhatmaReminderNotification(
 
   try {
     const response = await messaging.sendEachForMulticast(message);
-    
+   
     let removedTokensCount = 0;
     if (response.failureCount > 0) {
       const invalidTokens = tokens.filter((_, i) =>
@@ -131,72 +141,4 @@ export async function sendKhatmaReminderNotification(
   }
 }
 
-// export function calculateNextReminderAt(
-//   time: string,
-//   timezone: string,
-//   days?: number[],
-// ): Date {
-//   const [hour, minute] = time.split(":").map(Number);
-//   const now = DateTime.now().setZone(timezone);
-
-//   for (let i = 1; i <= 7; i++) {
-//     const candidate = now
-//       .plus({ days: i })
-//       .set({ hour, minute, second: 0, millisecond: 0 });
-
-//     const validDay = !days?.length || days.includes(candidate.weekday);
-
-//     if (validDay && candidate > now) {
-//       return candidate.toUTC().toJSDate();
-//     }
-//   }
-
-//   throw new Error(`No valid next reminder found for days: ${days}`);
-// }
-
-// export async function sendAndAdvanceReminder(reminder: ReminderWithUser) {
-//   const result = await sendNotification(reminder);
-
-//   if (result.status !== "sent") {
-//     return result;
-//   }
-
-//   await prisma.reminder.update({
-//     where: {
-//       id: reminder.id,
-//     },
-
-//     data: {
-//       nextReminderAt: calculateNextReminderAt(
-//         reminder.time,
-//         reminder.timezone,
-//         reminder.days,
-//       ),
-//     },
-//   });
-
-//   return result;
-// }
-
-// export async function sendAndAdvanceKhatmaReminder(
-//   reminder: KhatmaReminderWithUser,
-// ) {
-//   const result = await sendKhatmaReminderNotification(reminder);
-
-//   if (result.status !== "sent") {
-//     return result;
-//   }
-
-//   // Daily reminder
-//   await prisma.khatmaReminder.update({
-//     where: {
-//       id: reminder.id,
-//     },
-
-//     data: {
-//       nextReminderAt: calculateNextReminderAt(reminder.time, reminder.timezone),
-//     },
-//   });
-
-//   return result;
-// }
+export { sendNotification, sendKhatmaReminderNotification };
