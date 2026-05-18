@@ -1,5 +1,4 @@
 "use client";
-// import Search from "./Search";
 import SideNav from "./SideNav";
 import { Link } from "@/i18n/navigation";
 
@@ -60,9 +59,7 @@ const Navbar = () => {
           </Link>
 
           {/* Search - Hidden on very small screens, grows on larger screens */}
-          {/* <div className="flex-1 max-w-xl mx-2 sm:mx-3 md:mx-4">
-            <Search />
-          </div> */}
+          
           <NewSearch />
 
           {/* Action buttons - Responsive spacing and sizing */}
