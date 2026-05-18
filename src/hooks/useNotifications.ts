@@ -62,7 +62,6 @@ export const useNotifications = () => {
 
     if (messaging) {
       const unsubscribe = onMessage(messaging, (payload) => {
-        console.log("Foreground message received:", payload);
         const link = payload.data?.url;
         if (link) {
           // Handle foreground message (e.g., show a toast)

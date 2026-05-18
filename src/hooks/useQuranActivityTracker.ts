@@ -49,7 +49,6 @@ export const useQuranActivityTracker = ({
       if (!activityRanges) return;
 
       const estimatedReadSeconds = calculateReadingTime(versesOnPage);
-      console.log('estimatedRead',estimatedReadSeconds)
       trackedPagesRef.current.add(currentPage);
       // Start timer for THIS page — fires after estimated read time
       pendingActivityTimer.current = setTimeout(() => {
@@ -57,9 +56,7 @@ export const useQuranActivityTracker = ({
         // Check focus at fire time, not schedule time
         const isWindowFocused =
           typeof document !== "undefined" && document.hasFocus();
-        console.log({ isWindowFocused });
-        if (typeof document === "undefined" || !document.hasFocus()) return;
-        console.log("adding activity for page");
+        if (!isWindowFocused) return;
         addActivityDay({
           type: "QURAN",
           seconds: estimatedReadSeconds,

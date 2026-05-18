@@ -190,7 +190,6 @@ export async function PATCH(request: Request) {
 
     return NextResponse.json("Settings updated", { status: 200 });
   } catch (error) {
-    console.log(error,'error from update setting')
     if ((error as Error).message === "Unauthorized") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
