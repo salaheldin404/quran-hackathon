@@ -36,10 +36,10 @@ export function InsightsSection({ stats }: InsightsSectionProps) {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 1.0 }}
         >
-          <Card className="border-emerald-500/10 bg-emerald-500/5 overflow-hidden group h-full relative">
+          <Card className="border-primary/10 bg-primary/5 overflow-hidden group h-full relative">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                <Compass className="w-4 h-4 text-emerald-500" />
+                <Compass className="w-4 h-4 text-primary" />
                 {t("mostReadSurah")}
               </CardTitle>
             </CardHeader>
@@ -56,12 +56,13 @@ export function InsightsSection({ stats }: InsightsSectionProps) {
                 {mostReadSurah.number}
               </div>
             </CardContent>
+
             <div className="absolute bottom-4 ltr:right-4 rtl:left-4">
               <Button
                 asChild
                 variant="ghost"
                 size="sm"
-                className="hover:bg-emerald-500/10 hover:text-emerald-600 transition-all duration-300 gap-1 group/btn"
+                className="hover:bg-primary/10 hover:text-primary transition-all duration-300 gap-1 group/btn"
               >
                 <Link href={`/surahs/${mostReadSurah.number}`}>
                   {t("readSurah")}
@@ -79,49 +80,36 @@ export function InsightsSection({ stats }: InsightsSectionProps) {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 1.1 }}
         >
-          <Card
-            className="border-emerald-500/10 bg-emerald-500/5 relative overflow-hidden group h-full"
-            style={{ borderColor: `${mostReadTheme.color}30` }}
-          >
+          <Card className="border-primary/10 bg-primary/5 relative overflow-hidden group h-full">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                <Sparkles
-                  className="w-4 h-4"
-                  style={{ color: mostReadTheme.color }}
-                />
+                <Sparkles className="w-4 h-4 text-primary" />
                 {t("mostReadTheme")}
               </CardTitle>
             </CardHeader>
-            <CardContent className="pb-16">
+
+            <CardContent className="pb-16 relative">
               <div className="flex items-center justify-between ">
                 <div>
-                  <h3
-                    className="text-2xl font-bold"
-                    style={{ color: mostReadTheme.color }}
-                  >
+                  <h3 className="text-2xl font-bold text-primary">
                     {isArabic ? mostReadTheme.label : mostReadTheme.subtitle}
                   </h3>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-muted-foreground mt-1">
                     {mostReadTheme.surahIds.length}
-                    {isArabic ? "سورة" : "surahs"}
+                    {isArabic ? " سورة" : " surahs"}
                   </p>
                 </div>
               </div>
-              <div
-                className="w-24 h-24 -z-10 absolute -bottom-4 -right-4 rounded-full blur-2xl opacity-10 group-hover:opacity-20 transition-opacity"
-                style={{ backgroundColor: mostReadTheme.color }}
-              />
+
+              <div className="w-24 h-24 -z-10 absolute -bottom-4 -right-4 rounded-full blur-2xl opacity-10 group-hover:opacity-20 transition-opacity bg-primary" />
             </CardContent>
+
             <div className="absolute bottom-4 ltr:right-4 rtl:left-4">
               <Button
                 asChild
                 variant="ghost"
                 size="sm"
-                className="transition-all duration-300 gap-1 group/btn"
-                style={{
-                  backgroundColor: `${mostReadTheme.color}15`,
-                  color: mostReadTheme.color,
-                }}
+                className="transition-all duration-300 gap-1 group/btn bg-primary/15 text-primary hover:bg-primary/25 hover:text-primary"
               >
                 <Link href={`/quranicGalaxy`}>
                   {t("viewThemes")}

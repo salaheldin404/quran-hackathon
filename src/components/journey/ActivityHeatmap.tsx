@@ -56,22 +56,24 @@ export function ActivityHeatmap({ stats, yearSetting }: ActivityHeatmapProps) {
         10: "#10b981",
       };
 
-  const isCurrentYear = yearSetting.selectedYear === DateTime.now().year;
+  // const isCurrentYear = yearSetting.selectedYear === DateTime.now().year;
 
   const startDate = DateTime.fromISO(
     `${yearSetting.selectedYear}-01-01`,
   ).toJSDate();
 
-  const endDate = isCurrentYear
-    ? DateTime.now().toJSDate()
-    : DateTime.fromISO(`${yearSetting.selectedYear}-12-31`).toJSDate();
+  // const endDate = isCurrentYear
+  //   ? DateTime.now().toJSDate()
+  //   : DateTime.fromISO(`${yearSetting.selectedYear}-12-31`).toJSDate();
+
+  const endDate = DateTime.fromISO(`${yearSetting.selectedYear}-12-31`).toJSDate();
 
   const heatmapDataMap = useMemo(() => {
     return new Map(stats.heatmapData.map((d) => [d.date, d]));
   }, [stats.heatmapData]);
 
   return (
-    <Card className="h-full border-emerald-500/10 overflow-hidden">
+    <Card className=" border-emerald-500/10 overflow-hidden">
       <CardHeader className="flex justify-between items-center gap-3">
         <div>
           <CardTitle>{t("title")}</CardTitle>
@@ -88,7 +90,7 @@ export function ActivityHeatmap({ stats, yearSetting }: ActivityHeatmapProps) {
             <HeatMap
               value={stats.heatmapData}
               width="100%"
-              rectSize={15}
+              rectSize={12}
               space={3}
               monthLabels={monthLabels}
               weekLabels={weekLabels}
