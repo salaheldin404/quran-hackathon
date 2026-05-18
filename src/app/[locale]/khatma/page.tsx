@@ -100,7 +100,7 @@ export default async function KhatmaPage({
 
   // Get plans only if user is authenticated
   const plans = userId ? await getKhatmaPlans(userId) : ([] as KhatmaPlan[]);
-  const baseUrl = "https://skinah-streams.vercel.app";
+  const baseUrl = process.env.SITE_URL!;
 
   const jsonLd = {
     "@context": "https://schema.org",

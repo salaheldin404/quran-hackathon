@@ -88,7 +88,7 @@ export default async function Home({
 }) {
   const { locale } = await params;
   const isArabic = locale === "ar";
-  const baseUrl = "https://skinah-streams.vercel.app";
+  const baseUrl = process.env.SITE_URL!
 
   const jsonLd = {
     "@context": "https://schema.org",

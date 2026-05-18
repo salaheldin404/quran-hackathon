@@ -78,7 +78,7 @@ const SurahsPage = async ({
   const { locale } = await params;
   const isArabic = locale === "ar";
   const surahs = quranData.data;
-  const SITE_URL = "https://skinah-streams.vercel.app";
+  const SITE_URL = process.env.SITE_URL!;
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "ItemList",

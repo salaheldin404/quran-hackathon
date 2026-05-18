@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 import surahData from "@/data/all-quran-surah.json";
 
-const BASE_URL = "https://skinah-streams.vercel.app";
+const BASE_URL = process.env.SITE_URL!
 
 const LOCALES = ["ar", "en"] as const;
 

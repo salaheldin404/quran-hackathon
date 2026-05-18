@@ -75,7 +75,7 @@ const HisnMuslimPage = async () => {
   const categories = Object.keys(hisnMuslimData) as Array<
     keyof typeof hisnMuslimData
   >;
-  const SITE_URL = process.env.SITE_URL || "https://skinah-streams.vercel.app";
+  const SITE_URL = process.env.SITE_URL!;
 
   const jsonLd = {
     "@context": "https://schema.org",
