@@ -59,6 +59,7 @@ import { transformReduxToDB } from "../utils/setting";
 import { resetToDefaultState } from "./root-actions";
 
 import khatmaReducer from "./slices/khatma-slice";
+import languageReducer, {  setLanguage } from "./slices/language-slice";
 import { qfApiSlice } from "./services/qfApiSlice";
 // Constants
 const isBrowser = typeof window !== "undefined";
@@ -85,6 +86,7 @@ const appReducer = combineReducers({
   athkar: athkarReducer,
   sync: syncReducer,
   khatma: khatmaReducer,
+  language: languageReducer,
 });
 
 const rootReducer: typeof appReducer = (state, action) => {
@@ -165,6 +167,7 @@ const getLocalStorageState = (state: RootState) => {
       expirationDate: state.athkar.expirationDate,
       ...athkarData,
     },
+    language: state.language,
   };
 };
 
@@ -192,6 +195,7 @@ startAppListening({
     checkAndResetIfExpired,
     resetCustomAthkar,
     resetCustomCardAthkar,
+    setLanguage,
   ),
   effect: (action, listenerApi) => {
     const state = listenerApi.getState();
@@ -215,6 +219,7 @@ startAppListening({
       surah: state.surah,
       wishlist: state.wishlist,
       athkar: state.athkar,
+      language: state.language,
     };
     const stateForDB = transformReduxToDB(stateData);
 

@@ -7,6 +7,7 @@ import { hydrateFont } from "@/lib/store/slices/font-slice";
 import { hydrateSurah } from "@/lib/store/slices/surah-slice";
 import { hydrateWishlist } from "@/lib/store/slices/wishlist-slice";
 import { hydrateAthkar } from "@/lib/store/slices/athkar-slice";
+import { hydrateLanguage } from "@/lib/store/slices/language-slice";
 import { setSyncStatus } from "@/lib/store/slices/sync-slice";
 import type { LastRead } from "@/types/surah";
 import {
@@ -54,6 +55,13 @@ export function useHydrateSettings() {
             if (settings.lastRead) {
               dispatch(
                 hydrateSurah({ lastRead: settings.lastRead as LastRead }),
+              );
+            }
+
+            // Hydrate language state
+            if (settings.language) {
+              dispatch(
+                hydrateLanguage({ language: settings.language as "ar" | "en" })
               );
             }
 

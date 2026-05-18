@@ -108,7 +108,7 @@ const SideNav = () => {
           <SheetTitle>{t("title")}</SheetTitle>
         </SheetHeader>
         {/* Navigation Links */}
-        <nav className="flex-1 overflow-auto py-2 hide-scrollbar">
+        <nav className="flex-1 overflow-auto py-2 custom-scrollbar lg:hide-scrollbar">
           <ul className="space-y-1">
             {LINKS.map(({ title, href, icon: Icon }) => {
               const isActive = pathname === href;
@@ -148,14 +148,14 @@ const SideNav = () => {
         >
           <LuX size={30} />
         </SheetClose>
-        <SheetFooter className=" border-t pt-4  space-y-4 ">
+        <SheetFooter className="p-2 md:p-4 border-t   space-y-2 md:space-y-4 ">
           {/* Theme */}
           <ModeToggle />
 
           {/* Language */}
           <LanguageSwitcher />
           {/* Attribution */}
-          <div className="border-t pt-4 mb-2  text-center">
+          <div className="border-t pt-2 mb-2  text-center">
             <Link
               className=" text-xs text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
               href="https://www.linkedin.com/in/salah-eldin-ahmed-389471221/"

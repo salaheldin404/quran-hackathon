@@ -70,16 +70,17 @@ export function StreakCard({
   ];
   return (
     <Card
-      className={`${cardClass} h-full border-emerald-500/10 bg-emerald-500/5 overflow-hidden relative`}
+      className={`${cardClass} w-full h-full border-primary/10 bg-primary/5 overflow-hidden relative`}
     >
       <CardHeader className={`${variant === "compact" ? "flex-1 " : ""}`}>
         <CardTitle className="flex items-center gap-2 text-xl">
           <Flame className="w-6 h-6 text-orange-500 fill-orange-500" />
           {t("title")}
         </CardTitle>
+
         {variant === "compact" && (
           <Link href={"/journey"} className="group block z-10 w-fit">
-            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 transition-all duration-300 hover:bg-emerald-500/20 hover:shadow-md group-hover:gap-3">
+            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary transition-all duration-300 hover:bg-primary/20 hover:shadow-md group-hover:gap-3">
               <span className="text-sm font-medium">{t("viewDetails")}</span>
               <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
             </div>
@@ -92,13 +93,13 @@ export function StreakCard({
         >
           {isLoading ? (
             <div className="space-y-3 w-full max-w-[160px]">
-              <div className="mx-auto h-16 w-24 rounded-2xl bg-emerald-500/10 animate-pulse" />
-              <div className="mx-auto h-4 w-20 rounded-full bg-emerald-500/10 animate-pulse" />
+              <div className="mx-auto h-16 w-24 rounded-2xl bg-primary/10 animate-pulse" />
+              <div className="mx-auto h-4 w-20 rounded-full bg-primary/10 animate-pulse" />
             </div>
           ) : (
             <>
               <div
-                className={`${variant === "detailed" ? "text-6xl" : "text-5xl"} font-black text-emerald-600 dark:text-emerald-400 tabular-nums`}
+                className={`${variant === "detailed" ? "text-6xl" : "text-5xl"} font-black text-primary tabular-nums`}
               >
                 {stats.currentStreak}
               </div>
@@ -110,7 +111,7 @@ export function StreakCard({
         </div>
 
         {showDetails ? (
-          <div className="grid grid-cols-3 gap-4 pt-4 border-t border-emerald-500/10">
+          <div className="grid grid-cols-3 gap-4 pt-4 border-t border-primary/10">
             {items.map((item) => (
               <div key={item.label} className="space-y-1">
                 <div className="flex justify-center items-center gap-1.5 text-[10px] font-medium text-muted-foreground">
@@ -130,7 +131,7 @@ export function StreakCard({
             <div
               className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium ${
                 stats.isReadToday
-                  ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400"
+                  ? "bg-primary/20 text-primary"
                   : "bg-orange-500/10 text-orange-600 dark:text-orange-400"
               }`}
             >

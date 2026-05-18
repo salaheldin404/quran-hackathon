@@ -20,6 +20,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Activity } from "@/types/activity";
 import { useAppSelector } from "@/lib/store/hooks";
 import Loading from "./Loading";
+import CompletedKhatmas from "@/components/khatma/CompletedKhatmas";
 
 export function JourneyContainer() {
   const t = useTranslations("Journey");
@@ -42,7 +43,6 @@ export function JourneyContainer() {
         setIsLoading(true);
 
         const result = await fetchAllActivityDaysForYear({
-
           year: selectedYear,
 
           fetchActivityDays: async (params) => {
@@ -82,8 +82,12 @@ export function JourneyContainer() {
   }, [selectedYear, getActivityDays, user?.id]);
 
   const stats = useMemo(() => {
-    return calculateJourneyStats(activities, currentStreakData?.days || 0);
-  }, [activities, currentStreakData?.days]);
+    return calculateJourneyStats(
+      activities,
+      currentStreakData?.days || 0,
+      user?.completedKhatmas || 0,
+    );
+  }, [activities, currentStreakData?.days, user?.completedKhatmas]);
   if (isLoading) {
     return <Loading />;
   }
@@ -117,18 +121,15 @@ export function JourneyContainer() {
         <HeroSection />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-4">
-          <StreakCard stats={stats} />
-        </div>
-        <div className="lg:col-span-8">
-          <ActivityHeatmap
-            stats={stats}
-            yearSetting={{ selectedYear, setSelectedYear }}
-          />
-        </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
+        <StreakCard stats={stats} />
+        <CompletedKhatmas />
       </div>
-
+      <ActivityHeatmap
+        stats={stats}
+        yearSetting={{ selectedYear, setSelectedYear }}
+      />
       <StatsGrid stats={stats} />
 
       <InsightsSection stats={stats} />

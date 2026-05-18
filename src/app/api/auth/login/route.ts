@@ -3,7 +3,7 @@ import { randomBytes, createHash } from "crypto";
 import { getQfOAuthConfig } from "@/lib/oauth/qf";
 
 
-const SCOPES = "openid offline_access user note activity_day streak";
+const SCOPES = "openid offline_access note activity_day streak";
 
 function base64url(buf: Buffer) {
   return buf.toString("base64").replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");

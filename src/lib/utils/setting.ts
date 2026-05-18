@@ -73,8 +73,9 @@ export const transformReduxToDB = (reduxState: {
   surah: RootState["surah"];
   athkar: RootState["athkar"];
   wishlist: RootState["wishlist"];
+  language: RootState["language"];
 }): DatabaseState => {
-  const { font, audio, surah, athkar, wishlist } = reduxState;
+  const { font, audio, surah, athkar, wishlist, language } = reduxState;
 
   // Extract athkar data without expirationDate
   const { expirationDate, ...athkarData } = athkar;
@@ -96,6 +97,9 @@ export const transformReduxToDB = (reduxState: {
     fontStyle: font.quranFont.style,
     fontSize: font.quranFont.size,
     ayahNumberStyle: font.ayahNumberStyle,
+
+    // Language setting
+    language: language.language,
 
     // Last read (stored as JSON)
     lastRead: surah.lastRead,

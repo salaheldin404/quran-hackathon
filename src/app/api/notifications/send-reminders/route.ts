@@ -2,8 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { DateTime } from "luxon";
 import { KhatmaReminderWithUser, ReminderWithUser } from "@/types/notification";
-import sendNotification from "@/lib/notifications/sendNotification";
-import sendKhatmaReminderNotification from "@/lib/notifications/sendKhatmaReminderNotification";
+import {sendKhatmaReminderNotification,sendNotification} from "@/lib/notifications/";
 
 function getLocalTimeAndDay(timezone: string) {
   const now = DateTime.now().setZone(timezone);
@@ -39,7 +38,10 @@ export async function GET(req: Request) {
         where: { isEnabled: true },
         include: {
           user: {
-            include: { pushSubscriptions: true },
+            include: { 
+              pushSubscriptions: true,
+              settings: { select: { language: true } },
+            },
           },
         },
       }),
@@ -47,7 +49,10 @@ export async function GET(req: Request) {
         where: { isEnabled: true },
         include: {
           user: {
-            include: { pushSubscriptions: true },
+            include: { 
+              pushSubscriptions: true,
+              settings: { select: { language: true } },
+            },
           },
         },
       }),

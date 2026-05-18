@@ -98,17 +98,45 @@ const calculateLongestStreak = (sortedDates: DateTime[]) => {
 
   return longest;
 };
-
-function buildAchievements(
-  totalReadingDays: number,
-  longestStreak: number,
-  totalPagesRead: number,
-): JourneyStats["achievements"] {
+function buildAchievements({
+  totalReadingDays,
+  longestStreak,
+  totalPagesRead,
+  completedKhatmas,
+}: {
+  totalReadingDays: number;
+  longestStreak: number;
+  totalPagesRead: number;
+  completedKhatmas: number;
+}): JourneyStats["achievements"] {
   return [
+    // ===== Reading Days =====
     {
       id: "firstDay",
       isUnlocked: totalReadingDays >= 1,
-      progress: Math.min(totalReadingDays, 1),
+      progress: Math.min((totalReadingDays / 1) * 100, 100),
+    },
+    {
+      id: "readingDays7",
+      isUnlocked: totalReadingDays >= 7,
+      progress: Math.min((totalReadingDays / 7) * 100, 100),
+    },
+    {
+      id: "readingDays30",
+      isUnlocked: totalReadingDays >= 30,
+      progress: Math.min((totalReadingDays / 30) * 100, 100),
+    },
+    {
+      id: "readingDays100",
+      isUnlocked: totalReadingDays >= 100,
+      progress: Math.min((totalReadingDays / 100) * 100, 100),
+    },
+
+    // ===== Streaks =====
+    {
+      id: "streak3",
+      isUnlocked: longestStreak >= 3,
+      progress: Math.min((longestStreak / 3) * 100, 100),
     },
     {
       id: "streak7",
@@ -116,21 +144,69 @@ function buildAchievements(
       progress: Math.min((longestStreak / 7) * 100, 100),
     },
     {
+      id: "streak14",
+      isUnlocked: longestStreak >= 14,
+      progress: Math.min((longestStreak / 14) * 100, 100),
+    },
+    {
       id: "streak30",
       isUnlocked: longestStreak >= 30,
       progress: Math.min((longestStreak / 30) * 100, 100),
+    },
+    {
+      id: "streak90",
+      isUnlocked: longestStreak >= 90,
+      progress: Math.min((longestStreak / 90) * 100, 100),
+    },
+
+    // ===== Pages Read =====
+    {
+      id: "pages10",
+      isUnlocked: totalPagesRead >= 10,
+      progress: Math.min((totalPagesRead / 10) * 100, 100),
+    },
+    {
+      id: "pages50",
+      isUnlocked: totalPagesRead >= 50,
+      progress: Math.min((totalPagesRead / 50) * 100, 100),
     },
     {
       id: "pages100",
       isUnlocked: totalPagesRead >= 100,
       progress: Math.min((totalPagesRead / 100) * 100, 100),
     },
+    {
+      id: "pages500",
+      isUnlocked: totalPagesRead >= 500,
+      progress: Math.min((totalPagesRead / 500) * 100, 100),
+    },
+    {
+      id: "pages604",
+      isUnlocked: totalPagesRead >= 604,
+      progress: Math.min((totalPagesRead / 604) * 100, 100),
+    },
+    // ===== Khatma Achievements =====
+    {
+      id: "khatma1",
+      isUnlocked: completedKhatmas >= 1,
+      progress: Math.min((completedKhatmas / 1) * 100, 100),
+    },
+    {
+      id: "khatma3",
+      isUnlocked: completedKhatmas >= 3,
+      progress: Math.min((completedKhatmas / 3) * 100, 100),
+    },
+    {
+      id: "khatma5",
+      isUnlocked: completedKhatmas >= 5,
+      progress: Math.min((completedKhatmas / 5) * 100, 100),
+    },
   ];
 }
-
 export function calculateJourneyStats(
   activities: Activity[],
   currentStreak: number,
+  completedKhatmas: number,
 ): JourneyStats {
   if (!activities?.length) {
     return EMPTY_JOURNEY_STATS;
@@ -251,11 +327,12 @@ export function calculateJourneyStats(
 
     heatmapData,
 
-    achievements: buildAchievements(
-      activityDates.size,
+    achievements: buildAchievements({
+      totalReadingDays: activityDates.size,
       longestStreak,
       totalPagesRead,
-    ),
+      completedKhatmas,
+    }),
 
     insights: {
       mostReadSurahId,
@@ -390,10 +467,7 @@ function countWordsInVerse(verse: Verse): number {
   }
 
   // Fallback to text fields
-  const text =
-    verse.text_uthmani ??
-    verse.qpc_uthmani_hafs ??
-    "";
+  const text = verse.text_uthmani ?? verse.qpc_uthmani_hafs ?? "";
 
   if (!text.trim()) return 0;
 

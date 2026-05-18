@@ -71,6 +71,7 @@ export async function PATCH(request: Request) {
       fontStyle: data.fontStyle,
       fontSize: data.fontSize,
       ayahNumberStyle: data.ayahNumberStyle,
+      language: data.language || "ar",
       lastRead: data.lastRead
         ? (data.lastRead as unknown as InputJsonValue)
         : Prisma.DbNull,
@@ -189,6 +190,7 @@ export async function PATCH(request: Request) {
 
     return NextResponse.json("Settings updated", { status: 200 });
   } catch (error) {
+    console.log(error,'error from update setting')
     if ((error as Error).message === "Unauthorized") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }

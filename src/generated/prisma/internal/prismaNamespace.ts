@@ -1181,6 +1181,7 @@ export const UserSettingsScalarFieldEnum = {
   fontStyle: 'fontStyle',
   fontSize: 'fontSize',
   ayahNumberStyle: 'ayahNumberStyle',
+  language: 'language',
   lastReadAt: 'lastReadAt',
   lastPlayedSurahId: 'lastPlayedSurahId',
   lastPlayedAt: 'lastPlayedAt',

@@ -49,6 +49,7 @@ export type UserSettingsMinAggregateOutputType = {
   fontStyle: string | null
   fontSize: number | null
   ayahNumberStyle: string | null
+  language: string | null
   lastReadAt: Date | null
   lastPlayedSurahId: number | null
   lastPlayedAt: Date | null
@@ -66,6 +67,7 @@ export type UserSettingsMaxAggregateOutputType = {
   fontStyle: string | null
   fontSize: number | null
   ayahNumberStyle: string | null
+  language: string | null
   lastReadAt: Date | null
   lastPlayedSurahId: number | null
   lastPlayedAt: Date | null
@@ -83,6 +85,7 @@ export type UserSettingsCountAggregateOutputType = {
   fontStyle: number
   fontSize: number
   ayahNumberStyle: number
+  language: number
   lastReadAt: number
   lastPlayedSurahId: number
   lastPlayedAt: number
@@ -118,6 +121,7 @@ export type UserSettingsMinAggregateInputType = {
   fontStyle?: true
   fontSize?: true
   ayahNumberStyle?: true
+  language?: true
   lastReadAt?: true
   lastPlayedSurahId?: true
   lastPlayedAt?: true
@@ -135,6 +139,7 @@ export type UserSettingsMaxAggregateInputType = {
   fontStyle?: true
   fontSize?: true
   ayahNumberStyle?: true
+  language?: true
   lastReadAt?: true
   lastPlayedSurahId?: true
   lastPlayedAt?: true
@@ -152,6 +157,7 @@ export type UserSettingsCountAggregateInputType = {
   fontStyle?: true
   fontSize?: true
   ayahNumberStyle?: true
+  language?: true
   lastReadAt?: true
   lastPlayedSurahId?: true
   lastPlayedAt?: true
@@ -258,6 +264,7 @@ export type UserSettingsGroupByOutputType = {
   fontStyle: string
   fontSize: number
   ayahNumberStyle: string
+  language: string
   lastReadAt: Date | null
   lastPlayedSurahId: number | null
   lastPlayedAt: Date | null
@@ -300,6 +307,7 @@ export type UserSettingsWhereInput = {
   fontStyle?: Prisma.StringFilter<"UserSettings"> | string
   fontSize?: Prisma.IntFilter<"UserSettings"> | number
   ayahNumberStyle?: Prisma.StringFilter<"UserSettings"> | string
+  language?: Prisma.StringFilter<"UserSettings"> | string
   lastReadAt?: Prisma.DateTimeNullableFilter<"UserSettings"> | Date | string | null
   lastPlayedSurahId?: Prisma.IntNullableFilter<"UserSettings"> | number | null
   lastPlayedAt?: Prisma.DateTimeNullableFilter<"UserSettings"> | Date | string | null
@@ -323,6 +331,7 @@ export type UserSettingsOrderByWithRelationInput = {
   fontStyle?: Prisma.SortOrder
   fontSize?: Prisma.SortOrder
   ayahNumberStyle?: Prisma.SortOrder
+  language?: Prisma.SortOrder
   lastReadAt?: Prisma.SortOrderInput | Prisma.SortOrder
   lastPlayedSurahId?: Prisma.SortOrderInput | Prisma.SortOrder
   lastPlayedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -349,6 +358,7 @@ export type UserSettingsWhereUniqueInput = Prisma.AtLeast<{
   fontStyle?: Prisma.StringFilter<"UserSettings"> | string
   fontSize?: Prisma.IntFilter<"UserSettings"> | number
   ayahNumberStyle?: Prisma.StringFilter<"UserSettings"> | string
+  language?: Prisma.StringFilter<"UserSettings"> | string
   lastReadAt?: Prisma.DateTimeNullableFilter<"UserSettings"> | Date | string | null
   lastPlayedSurahId?: Prisma.IntNullableFilter<"UserSettings"> | number | null
   lastPlayedAt?: Prisma.DateTimeNullableFilter<"UserSettings"> | Date | string | null
@@ -372,6 +382,7 @@ export type UserSettingsOrderByWithAggregationInput = {
   fontStyle?: Prisma.SortOrder
   fontSize?: Prisma.SortOrder
   ayahNumberStyle?: Prisma.SortOrder
+  language?: Prisma.SortOrder
   lastReadAt?: Prisma.SortOrderInput | Prisma.SortOrder
   lastPlayedSurahId?: Prisma.SortOrderInput | Prisma.SortOrder
   lastPlayedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -399,6 +410,7 @@ export type UserSettingsScalarWhereWithAggregatesInput = {
   fontStyle?: Prisma.StringWithAggregatesFilter<"UserSettings"> | string
   fontSize?: Prisma.IntWithAggregatesFilter<"UserSettings"> | number
   ayahNumberStyle?: Prisma.StringWithAggregatesFilter<"UserSettings"> | string
+  language?: Prisma.StringWithAggregatesFilter<"UserSettings"> | string
   lastReadAt?: Prisma.DateTimeNullableWithAggregatesFilter<"UserSettings"> | Date | string | null
   lastPlayedSurahId?: Prisma.IntNullableWithAggregatesFilter<"UserSettings"> | number | null
   lastPlayedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"UserSettings"> | Date | string | null
@@ -417,6 +429,7 @@ export type UserSettingsCreateInput = {
   fontStyle?: string
   fontSize?: number
   ayahNumberStyle?: string
+  language?: string
   lastReadAt?: Date | string | null
   lastPlayedSurahId?: number | null
   lastPlayedAt?: Date | string | null
@@ -440,6 +453,7 @@ export type UserSettingsUncheckedCreateInput = {
   fontStyle?: string
   fontSize?: number
   ayahNumberStyle?: string
+  language?: string
   lastReadAt?: Date | string | null
   lastPlayedSurahId?: number | null
   lastPlayedAt?: Date | string | null
@@ -461,6 +475,7 @@ export type UserSettingsUpdateInput = {
   fontStyle?: Prisma.StringFieldUpdateOperationsInput | string
   fontSize?: Prisma.IntFieldUpdateOperationsInput | number
   ayahNumberStyle?: Prisma.StringFieldUpdateOperationsInput | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
   lastReadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastPlayedSurahId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   lastPlayedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -484,6 +499,7 @@ export type UserSettingsUncheckedUpdateInput = {
   fontStyle?: Prisma.StringFieldUpdateOperationsInput | string
   fontSize?: Prisma.IntFieldUpdateOperationsInput | number
   ayahNumberStyle?: Prisma.StringFieldUpdateOperationsInput | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
   lastReadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastPlayedSurahId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   lastPlayedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -506,6 +522,7 @@ export type UserSettingsCreateManyInput = {
   fontStyle?: string
   fontSize?: number
   ayahNumberStyle?: string
+  language?: string
   lastReadAt?: Date | string | null
   lastPlayedSurahId?: number | null
   lastPlayedAt?: Date | string | null
@@ -524,6 +541,7 @@ export type UserSettingsUpdateManyMutationInput = {
   fontStyle?: Prisma.StringFieldUpdateOperationsInput | string
   fontSize?: Prisma.IntFieldUpdateOperationsInput | number
   ayahNumberStyle?: Prisma.StringFieldUpdateOperationsInput | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
   lastReadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastPlayedSurahId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   lastPlayedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -543,6 +561,7 @@ export type UserSettingsUncheckedUpdateManyInput = {
   fontStyle?: Prisma.StringFieldUpdateOperationsInput | string
   fontSize?: Prisma.IntFieldUpdateOperationsInput | number
   ayahNumberStyle?: Prisma.StringFieldUpdateOperationsInput | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
   lastReadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastPlayedSurahId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   lastPlayedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -567,6 +586,7 @@ export type UserSettingsCountOrderByAggregateInput = {
   fontStyle?: Prisma.SortOrder
   fontSize?: Prisma.SortOrder
   ayahNumberStyle?: Prisma.SortOrder
+  language?: Prisma.SortOrder
   lastReadAt?: Prisma.SortOrder
   lastPlayedSurahId?: Prisma.SortOrder
   lastPlayedAt?: Prisma.SortOrder
@@ -593,6 +613,7 @@ export type UserSettingsMaxOrderByAggregateInput = {
   fontStyle?: Prisma.SortOrder
   fontSize?: Prisma.SortOrder
   ayahNumberStyle?: Prisma.SortOrder
+  language?: Prisma.SortOrder
   lastReadAt?: Prisma.SortOrder
   lastPlayedSurahId?: Prisma.SortOrder
   lastPlayedAt?: Prisma.SortOrder
@@ -610,6 +631,7 @@ export type UserSettingsMinOrderByAggregateInput = {
   fontStyle?: Prisma.SortOrder
   fontSize?: Prisma.SortOrder
   ayahNumberStyle?: Prisma.SortOrder
+  language?: Prisma.SortOrder
   lastReadAt?: Prisma.SortOrder
   lastPlayedSurahId?: Prisma.SortOrder
   lastPlayedAt?: Prisma.SortOrder
@@ -732,6 +754,7 @@ export type UserSettingsCreateWithoutUserInput = {
   fontStyle?: string
   fontSize?: number
   ayahNumberStyle?: string
+  language?: string
   lastReadAt?: Date | string | null
   lastPlayedSurahId?: number | null
   lastPlayedAt?: Date | string | null
@@ -753,6 +776,7 @@ export type UserSettingsUncheckedCreateWithoutUserInput = {
   fontStyle?: string
   fontSize?: number
   ayahNumberStyle?: string
+  language?: string
   lastReadAt?: Date | string | null
   lastPlayedSurahId?: number | null
   lastPlayedAt?: Date | string | null
@@ -790,6 +814,7 @@ export type UserSettingsUpdateWithoutUserInput = {
   fontStyle?: Prisma.StringFieldUpdateOperationsInput | string
   fontSize?: Prisma.IntFieldUpdateOperationsInput | number
   ayahNumberStyle?: Prisma.StringFieldUpdateOperationsInput | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
   lastReadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastPlayedSurahId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   lastPlayedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -811,6 +836,7 @@ export type UserSettingsUncheckedUpdateWithoutUserInput = {
   fontStyle?: Prisma.StringFieldUpdateOperationsInput | string
   fontSize?: Prisma.IntFieldUpdateOperationsInput | number
   ayahNumberStyle?: Prisma.StringFieldUpdateOperationsInput | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
   lastReadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastPlayedSurahId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   lastPlayedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -832,6 +858,7 @@ export type UserSettingsCreateWithoutWishlistSurahsInput = {
   fontStyle?: string
   fontSize?: number
   ayahNumberStyle?: string
+  language?: string
   lastReadAt?: Date | string | null
   lastPlayedSurahId?: number | null
   lastPlayedAt?: Date | string | null
@@ -854,6 +881,7 @@ export type UserSettingsUncheckedCreateWithoutWishlistSurahsInput = {
   fontStyle?: string
   fontSize?: number
   ayahNumberStyle?: string
+  language?: string
   lastReadAt?: Date | string | null
   lastPlayedSurahId?: number | null
   lastPlayedAt?: Date | string | null
@@ -890,6 +918,7 @@ export type UserSettingsUpdateWithoutWishlistSurahsInput = {
   fontStyle?: Prisma.StringFieldUpdateOperationsInput | string
   fontSize?: Prisma.IntFieldUpdateOperationsInput | number
   ayahNumberStyle?: Prisma.StringFieldUpdateOperationsInput | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
   lastReadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastPlayedSurahId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   lastPlayedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -912,6 +941,7 @@ export type UserSettingsUncheckedUpdateWithoutWishlistSurahsInput = {
   fontStyle?: Prisma.StringFieldUpdateOperationsInput | string
   fontSize?: Prisma.IntFieldUpdateOperationsInput | number
   ayahNumberStyle?: Prisma.StringFieldUpdateOperationsInput | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
   lastReadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastPlayedSurahId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   lastPlayedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -932,6 +962,7 @@ export type UserSettingsCreateWithoutWishlistRecitersInput = {
   fontStyle?: string
   fontSize?: number
   ayahNumberStyle?: string
+  language?: string
   lastReadAt?: Date | string | null
   lastPlayedSurahId?: number | null
   lastPlayedAt?: Date | string | null
@@ -954,6 +985,7 @@ export type UserSettingsUncheckedCreateWithoutWishlistRecitersInput = {
   fontStyle?: string
   fontSize?: number
   ayahNumberStyle?: string
+  language?: string
   lastReadAt?: Date | string | null
   lastPlayedSurahId?: number | null
   lastPlayedAt?: Date | string | null
@@ -990,6 +1022,7 @@ export type UserSettingsUpdateWithoutWishlistRecitersInput = {
   fontStyle?: Prisma.StringFieldUpdateOperationsInput | string
   fontSize?: Prisma.IntFieldUpdateOperationsInput | number
   ayahNumberStyle?: Prisma.StringFieldUpdateOperationsInput | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
   lastReadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastPlayedSurahId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   lastPlayedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1012,6 +1045,7 @@ export type UserSettingsUncheckedUpdateWithoutWishlistRecitersInput = {
   fontStyle?: Prisma.StringFieldUpdateOperationsInput | string
   fontSize?: Prisma.IntFieldUpdateOperationsInput | number
   ayahNumberStyle?: Prisma.StringFieldUpdateOperationsInput | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
   lastReadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastPlayedSurahId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   lastPlayedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1032,6 +1066,7 @@ export type UserSettingsCreateWithoutPlayHistoryInput = {
   fontStyle?: string
   fontSize?: number
   ayahNumberStyle?: string
+  language?: string
   lastReadAt?: Date | string | null
   lastPlayedSurahId?: number | null
   lastPlayedAt?: Date | string | null
@@ -1054,6 +1089,7 @@ export type UserSettingsUncheckedCreateWithoutPlayHistoryInput = {
   fontStyle?: string
   fontSize?: number
   ayahNumberStyle?: string
+  language?: string
   lastReadAt?: Date | string | null
   lastPlayedSurahId?: number | null
   lastPlayedAt?: Date | string | null
@@ -1090,6 +1126,7 @@ export type UserSettingsUpdateWithoutPlayHistoryInput = {
   fontStyle?: Prisma.StringFieldUpdateOperationsInput | string
   fontSize?: Prisma.IntFieldUpdateOperationsInput | number
   ayahNumberStyle?: Prisma.StringFieldUpdateOperationsInput | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
   lastReadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastPlayedSurahId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   lastPlayedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1112,6 +1149,7 @@ export type UserSettingsUncheckedUpdateWithoutPlayHistoryInput = {
   fontStyle?: Prisma.StringFieldUpdateOperationsInput | string
   fontSize?: Prisma.IntFieldUpdateOperationsInput | number
   ayahNumberStyle?: Prisma.StringFieldUpdateOperationsInput | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
   lastReadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastPlayedSurahId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   lastPlayedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1182,6 +1220,7 @@ export type UserSettingsSelect<ExtArgs extends runtime.Types.Extensions.Internal
   fontStyle?: boolean
   fontSize?: boolean
   ayahNumberStyle?: boolean
+  language?: boolean
   lastReadAt?: boolean
   lastPlayedSurahId?: boolean
   lastPlayedAt?: boolean
@@ -1206,6 +1245,7 @@ export type UserSettingsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   fontStyle?: boolean
   fontSize?: boolean
   ayahNumberStyle?: boolean
+  language?: boolean
   lastReadAt?: boolean
   lastPlayedSurahId?: boolean
   lastPlayedAt?: boolean
@@ -1226,6 +1266,7 @@ export type UserSettingsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   fontStyle?: boolean
   fontSize?: boolean
   ayahNumberStyle?: boolean
+  language?: boolean
   lastReadAt?: boolean
   lastPlayedSurahId?: boolean
   lastPlayedAt?: boolean
@@ -1246,6 +1287,7 @@ export type UserSettingsSelectScalar = {
   fontStyle?: boolean
   fontSize?: boolean
   ayahNumberStyle?: boolean
+  language?: boolean
   lastReadAt?: boolean
   lastPlayedSurahId?: boolean
   lastPlayedAt?: boolean
@@ -1256,7 +1298,7 @@ export type UserSettingsSelectScalar = {
   lastRead?: boolean
 }
 
-export type UserSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "reciterId" | "reciterName" | "volume" | "fontStyle" | "fontSize" | "ayahNumberStyle" | "lastReadAt" | "lastPlayedSurahId" | "lastPlayedAt" | "athkarData" | "athkarExpiration" | "createdAt" | "updatedAt" | "lastRead", ExtArgs["result"]["userSettings"]>
+export type UserSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "reciterId" | "reciterName" | "volume" | "fontStyle" | "fontSize" | "ayahNumberStyle" | "language" | "lastReadAt" | "lastPlayedSurahId" | "lastPlayedAt" | "athkarData" | "athkarExpiration" | "createdAt" | "updatedAt" | "lastRead", ExtArgs["result"]["userSettings"]>
 export type UserSettingsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   playHistory?: boolean | Prisma.UserSettings$playHistoryArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1288,6 +1330,7 @@ export type $UserSettingsPayload<ExtArgs extends runtime.Types.Extensions.Intern
     fontStyle: string
     fontSize: number
     ayahNumberStyle: string
+    language: string
     lastReadAt: Date | null
     lastPlayedSurahId: number | null
     lastPlayedAt: Date | null
@@ -1731,6 +1774,7 @@ export interface UserSettingsFieldRefs {
   readonly fontStyle: Prisma.FieldRef<"UserSettings", 'String'>
   readonly fontSize: Prisma.FieldRef<"UserSettings", 'Int'>
   readonly ayahNumberStyle: Prisma.FieldRef<"UserSettings", 'String'>
+  readonly language: Prisma.FieldRef<"UserSettings", 'String'>
   readonly lastReadAt: Prisma.FieldRef<"UserSettings", 'DateTime'>
   readonly lastPlayedSurahId: Prisma.FieldRef<"UserSettings", 'Int'>
   readonly lastPlayedAt: Prisma.FieldRef<"UserSettings", 'DateTime'>

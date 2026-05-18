@@ -1,6 +1,5 @@
 "use server";
 
-
 import { TOTAL_QURAN_PAGES } from "@/lib/constants/khatma";
 import { prisma } from "@/lib/prisma";
 import { calculateDaysAndTarget } from "@/lib/utils/khatma";
@@ -8,17 +7,12 @@ import {
   getKhatmaSchema,
   type KhatmaInput,
 } from "@/lib/validations/khatmaSchema";
-import type {
-  KhatmaActionResult,
-  UpdateKhatmaPlanData,
-} from "@/types/khatma";
+import type { KhatmaActionResult, UpdateKhatmaPlanData } from "@/types/khatma";
 import { getLocale, getTranslations } from "next-intl/server";
 import { revalidatePath } from "next/cache";
 import { getUserIdFromCookie } from "@/lib/oauth/session";
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
-
-
 
 /** Revalidate khatma-related caches. */
 async function revalidateKhatma() {
@@ -120,9 +114,11 @@ export async function updateKhatma(
     if (data.isActive !== undefined) update.isActive = data.isActive;
     if (data.title !== undefined) update.title = data.title;
     if (data.notes !== undefined) update.notes = data.notes;
-    if  (data.pausedAt !== undefined) update.pausedAt = data.pausedAt;
-    if (data.totalPausedDays !== undefined) update.totalPausedDays = data.totalPausedDays;  
-    if (data.bookMarkIndex !== undefined) update.bookMarkIndex = data.bookMarkIndex;
+    if (data.pausedAt !== undefined) update.pausedAt = data.pausedAt;
+    if (data.totalPausedDays !== undefined)
+      update.totalPausedDays = data.totalPausedDays;
+    if (data.bookMarkIndex !== undefined)
+      update.bookMarkIndex = data.bookMarkIndex;
 
     // Handle completion
     if (data.isCompleted !== undefined) {
@@ -148,8 +144,24 @@ export async function updateKhatma(
       );
       update.targetEndDate = targetDate;
     }
+    const isBecomingCompleted = data.isCompleted === true && !plan.isCompleted;
+    await prisma.$transaction(async (tx) => {
+      await tx.khatmaPlan.update({
+        where: { id },
+        data: update,
+      });
 
-    await prisma.khatmaPlan.update({ where: { id }, data: update });
+      if (isBecomingCompleted) {
+        await tx.user.update({
+          where: { id: userId },
+          data: {
+            completedKhatmas: {
+              increment: 1,
+            },
+          },
+        });
+      }
+    });
 
     await revalidateKhatma();
     return { message: t("planUpdated"), status: 200 };

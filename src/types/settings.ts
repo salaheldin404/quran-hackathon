@@ -24,6 +24,7 @@ export interface LocalStorageState {
     surahs: RootState["wishlist"]["surahs"];
   };
   athkar: RootState["athkar"];
+  language: RootState["language"];
 }
 
 export interface DatabaseState {
@@ -33,6 +34,7 @@ export interface DatabaseState {
   fontStyle: string;
   fontSize: number;
   ayahNumberStyle: string;
+  language: string;
   lastRead: LastRead | null;
   lastReadAt?: string;
   lastPlayedSurahId?: number | null;
@@ -69,6 +71,7 @@ export interface SettingsResponse {
   fontStyle: string;
   fontSize: number;
   ayahNumberStyle: string;
+  language: string;
   lastRead: Partial<LastRead> | null;
   lastReadAt: string | null;
   lastPlayedSurahId: number | null;

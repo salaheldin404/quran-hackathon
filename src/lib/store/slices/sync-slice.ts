@@ -8,6 +8,7 @@ export type UserSync = {
   firstName: string | null;
   lastName: string | null;
   createdAt: string;
+  completedKhatmas: number;
 }
 
 export interface SyncState {

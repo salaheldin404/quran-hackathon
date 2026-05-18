@@ -36,16 +36,16 @@ async function handler(
 ) {
   try {
     let sessionPayload = await getSessionPayload();
-    const userId = await getUserIdFromCookie();
+
     if (!sessionPayload?.accessToken) {
+      const userId = await getUserIdFromCookie();
       if (userId) {
         sessionPayload = await refreshToken(userId);
-        if (!sessionPayload) {
-          return new Response("Unauthorized", { status: 401 });
-        }
-      } else {
-        return new Response("Unauthorized", { status: 401 });
       }
+    }
+
+    if (!sessionPayload?.accessToken) {
+      return new Response("Unauthorized", { status: 401 });
     }
 
     const { slug } = await params;

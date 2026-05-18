@@ -4,22 +4,19 @@ import { Button } from "@/components/ui/button";
 import { LuGlobe } from "react-icons/lu";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useCallback, useTransition } from "react";
-import { usePathname, useRouter } from "@/i18n/navigation";
+import { useCallback } from "react";
+import { useAppDispatch } from "@/lib/store/hooks";
+import { setLanguage } from "@/lib/store/slices/language-slice";
 
 const LanguageSwitcher = () => {
   const locale = useLocale();
-  const router = useRouter();
-  const [, startTransition] = useTransition();
-  const pathname = usePathname();
   const tSettings = useTranslations("Settings");
+  const dispatch = useAppDispatch();
 
   const handleLanguageSwitch = useCallback(() => {
     const nextLocale = locale === "ar" ? "en" : "ar";
-    startTransition(() => {
-      router.replace(pathname, { locale: nextLocale });
-    });
-  }, [locale, pathname, router, startTransition]);
+    dispatch(setLanguage(nextLocale));
+  }, [locale, dispatch]);
 
   return (
     <div className="space-y-2">

@@ -56,7 +56,7 @@ export function StatsGrid({ stats }: StatsGridProps) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.1 + 0.5 }}
         >
-          <Card className="py-3 md:py-6 border-emerald-500/5 hover:border-emerald-500/20 transition-colors">
+          <Card className="py-3 md:py-6 border-primary/5 hover:border-primary/20 transition-colors">
             <CardContent className="p-3 md:p-6 flex md:flex-row flex-col items-center gap-4">
               <div className={`p-3 rounded-2xl ${item.bg}`}>
                 <item.icon className={`w-6 h-6 ${item.color}`} />

@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { decryptToken, encryptToken } from "./token-encryption";
-import { SessionPayload, setSession } from "./session";
+import { getUserIdFromCookie, SessionPayload, setSession } from "./session";
 
 type QfOAuthConfig = {
   clientId: string;
@@ -52,7 +52,6 @@ export const getQfOAuthConfig = (): QfOAuthConfig => {
 const refreshPromises = new Map<string, Promise<SessionPayload>>();
 
 export async function refreshToken(userId: string): Promise<SessionPayload> {
-  console.log(`Attempting to refresh token for user ${userId}`);
   // If there's already an ongoing refresh for this user, return that promise
   const existingPromise = refreshPromises.get(userId);
   if (existingPromise) return existingPromise;
@@ -128,5 +127,25 @@ export async function callQF(
     });
   };
 
-  return await makeRequest(sessionPayload.accessToken);
+  let response = await makeRequest(sessionPayload.accessToken);
+  if (response.status === 401) {
+    const userId = await getUserIdFromCookie();
+
+    // 3. If we have a user, attempt to refresh and retry
+    if (userId) {
+      try {
+        const { accessToken } = await refreshToken(userId);
+
+        // 4. Retry the request with the new token
+        response = await makeRequest(accessToken);
+      } catch (error) {
+        // Handle the case where the refresh token itself is expired/invalid
+        console.error("Token refresh failed", error);
+        // Depending on your setup, you might want to force a logout here
+      }
+    }
+  }
+
+  // 5. Return the response (either the successful first try, or the retried attempt)
+  return response;
 }
