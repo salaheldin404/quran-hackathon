@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { CheckCircle2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
@@ -42,13 +42,38 @@ export default function ProfilePageClient({
   const [khatmaReminder, setKhatmaReminder] = useState<KhatmaReminderForm>(
     initialKhatmaReminder,
   );
+  const [baseline, setBaseline] = useState({
+    quran: initialQuranReminders,
+    khatma: initialKhatmaReminder,
+  });
   const [deviceCount, setDeviceCount] = useState(profile.pushDeviceCount);
   const [isSaving, setIsSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
 
+  const isDirty = useMemo(() => {
+    return (
+      JSON.stringify(quranReminders) !== JSON.stringify(baseline.quran) ||
+      JSON.stringify(khatmaReminder) !== JSON.stringify(baseline.khatma)
+    );
+  }, [quranReminders, khatmaReminder, baseline]);
+
   const reminderCount =
     quranReminders.filter((reminder) => reminder.isEnabled).length +
     Number(khatmaReminder.isEnabled);
+
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isDirty) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [isDirty]);
 
   useEffect(() => {
     if (permission === "granted" && deviceCount === 0) {
@@ -128,6 +153,10 @@ export default function ProfilePageClient({
 
       setQuranReminders(result.quranReminders);
       setKhatmaReminder(result.khatmaReminder);
+      setBaseline({
+        quran: result.quranReminders,
+        khatma: result.khatmaReminder,
+      });
       setSaveMessage(t("save.success"));
       toast.success(t("save.successToast"));
 
@@ -213,6 +242,7 @@ export default function ProfilePageClient({
                 quranReminders={quranReminders}
                 khatmaReminder={khatmaReminder}
                 isSaving={isSaving}
+                isDirty={isDirty}
               />
             </div>
           </form>
