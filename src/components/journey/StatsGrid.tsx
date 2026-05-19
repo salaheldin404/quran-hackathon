@@ -25,7 +25,7 @@ export function StatsGrid({ stats }: StatsGridProps) {
   const items = [
     {
       label: t("totalPages"),
-      value: stats.totalPagesRead,
+      value: stats.totalPagesRead.toFixed(0),
       icon: BookOpen,
       color: "text-blue-500",
       bg: "bg-blue-500/10",
