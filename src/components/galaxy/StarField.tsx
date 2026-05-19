@@ -1,10 +1,5 @@
-import { makeStars } from "@/lib/utils/galaxy";
-import { useMemo } from "react";
-import StarItem from "./StarItem";
-
-export function StarField() {
-  const stars = useMemo(() => makeStars(340), []);
-
+import { memo } from "react";
+const StarField = memo(() => {
   return (
     <div
       aria-hidden="true"
@@ -31,11 +26,10 @@ export function StarField() {
             "radial-gradient(ellipse,rgba(255,245,200,.18) 0%,rgba(220,180,120,.08) 40%,transparent 70%)",
         }}
       />
-
-      {/* ── Stars ─────────────────────────────────────────────────────────── */}
-      {stars.map((s) => (
-        <StarItem key={s.id} star={s} />
-      ))}
     </div>
   );
-}
+});
+
+StarField.displayName = "StarField";
+
+export default StarField;
