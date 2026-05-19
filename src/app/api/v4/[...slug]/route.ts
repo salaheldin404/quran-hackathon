@@ -12,9 +12,10 @@ let tokenCache: TokenCache = {
   token: null,
   expiresAt: 0,
 };
-
+// const tokenUrl = "https://oauth2.quran.foundation/oauth2/token";
+  //  "https://prelive-oauth2.quran.foundation/oauth2/token";
 async function getAccessToken(): Promise<string | null> {
-  const { clientId, clientSecret } = getQfOAuthConfig();
+  const { clientId, clientSecret,tokenUrl } = getQfOAuthConfig();
   // Return cached token if it's still valid
   if (tokenCache.token && Date.now() < tokenCache.expiresAt) {
     return tokenCache.token;
@@ -27,8 +28,7 @@ async function getAccessToken(): Promise<string | null> {
   }
 
   const auth = Buffer.from(`${clientId}:${clientSecret}`).toString("base64");
-  const tokenUrl = "https://oauth2.quran.foundation/oauth2/token";
-  //  "https://prelive-oauth2.quran.foundation/oauth2/token";
+  
   try {
     const response = await fetch(tokenUrl, {
       method: "POST",
