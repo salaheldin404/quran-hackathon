@@ -1,168 +1,163 @@
-import { useBreakpoint } from "@/hooks/useBreakPoint";
-import { GalaxySurah } from "@/types/galaxy";
+import { GalaxySurah, Point } from "@/types/galaxy";
 import { motion } from "framer-motion";
-import { useLocale } from "next-intl";
-import { memo, useState } from "react";
+import { CSSProperties, memo, useMemo } from "react";
 
-type StarProps = {
+interface StarProps {
   surah: GalaxySurah;
+  position: Point;
   isFilteredView: boolean;
   onClick: () => void;
-};
+  isMobile: boolean;
+  isArabic: boolean;
+}
+// const STAR_CLIP_PATH =
+//   "polygon(50% 0%, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0% 50%, 38% 38%)";
+
+const STAR_CLIP_PATH =
+  "polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)";
+
+const STAR_ENTER_TRANSITION = { duration: 0.35, ease: "easeOut" } as const;
+const LABEL_TRANSITION = { duration: 0.18 } as const;
+
+const STAR_WHILE_TAP = { scale: 0.92 } as const;
+const INNER_WHILE_TAP = { scale: 0.9 } as const;
+
+// const STAR_INITIAL = { opacity: 0, scale: 0.6 } as const;
+const STAR_ANIMATE = { opacity: 1, scale: 1 } as const;
+const STAR_EXIT = { opacity: 0, scale: 0 } as const;
+
+const GLOW_VARIANTS = {
+  idle: { opacity: 0.55 },
+  hovered: { opacity: 0.9 },
+} as const;
+
+const BUTTON_VARIANTS = {
+  idle:    { scale: 1,   zIndex: 10 },
+  hovered: { scale: 1.5, zIndex: 20 },
+} as const;
+
+const LABEL_VARIANTS = {
+  idle: { opacity: 0, y: 4 },
+  hovered: { opacity: 1, y: 0 },
+} as const;
 
 const Star = memo(
   ({
     surah,
-
+    position,
     isFilteredView,
     onClick,
+    isMobile,
+    isArabic,
   }: StarProps) => {
-    const [isHovered, setIsHovered] = useState(false);
-    const { isMobile } = useBreakpoint();
-    const locale = useLocale();
-    const isArabic = locale === "ar";
     const size = isMobile ? 10 : 15;
 
-    // Opacity priority chain for the star itself
+    const positionStyle = useMemo<CSSProperties>(
+      () => ({ left: `${position.x}%`, top: `${position.y}%` }),
+      [position.x, position.y],
+    );
 
-    const showLabel = isHovered || isFilteredView;
-    const glowStyle = {
-      width: size * 2.6,
-      height: size * 2.6,
+    const glowBackground = useMemo(
+      () =>
+        `radial-gradient(circle, ${surah.color}66 0%, ${surah.color}11 60%, transparent 80%)`,
+      [surah.color],
+    );
 
-      position: "absolute" as const,
+    const glowStyle = useMemo<CSSProperties>(
+      () => ({
+        width: size * 2.6,
+        height: size * 2.6,
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%) translateZ(0)",
+        borderRadius: "9999px",
+        background: glowBackground,
+        willChange: "opacity",
+      }),
+      [size, glowBackground],
+    );
 
-      top: "50%",
-      left: "50%",
+    const starStyle = useMemo<CSSProperties>(
+      () =>
+        ({
+          width: size,
+          height: size,
+          background: surah.color,
+          clipPath: STAR_CLIP_PATH,
+          filter: isMobile
+            ? "none"
+            : `drop-shadow(0 0 ${size * 0.4}px ${surah.color})`,
+          willChange: "transform",
+          // CSS custom property drives @keyframes duration — set once, zero rerenders
+          "--pulse-duration": isMobile
+            ? "0s"
+            : `${2 + (surah.number % 3) * 0.5}s`,
+        }) as CSSProperties,
+      [size, surah.color, isMobile, surah.number],
+    );
 
-      transform: "translate(-50%, -50%)",
+    const labelStyle = useMemo<CSSProperties>(
+      () => ({
+        color: surah.color,
+        fontSize: 9,
+        textShadow: isMobile ? "none" : "0 0 6px #000",
+        backgroundColor: isMobile ? "rgba(3,3,9,0.6)" : "transparent",
+        padding: isMobile ? "2px 4px" : "0",
+        borderRadius: "4px",
+      }),
+      [surah.color, isMobile],
+    );
 
-      borderRadius: "9999px",
-
-      background: `
-    radial-gradient(
-      circle,
-      ${surah.color}55 0%,
-      ${surah.color}22 45%,
-      transparent 75%
-    )
-  `,
-
-      filter: `blur(${size * 0.18}px)`,
-
-      opacity: isHovered ? 0.9 : 0.55,
-
-      willChange: "transform, opacity",
-    };
-
-    const starStyle = {
-      width: size,
-      height: size,
-
-      background: surah.color,
-
-      clipPath:
-        "polygon(50% 0%, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0% 50%, 38% 38%)",
-
-      filter: `
-    drop-shadow(0 0 ${size * 0.4}px ${surah.color})
-    drop-shadow(0 0 ${size * 0.9}px ${surah.color}88)
-  `,
-    };
-
-    const labelStyle = {
-      color: surah.color,
-      fontSize: 9,
-      textShadow: "0 0 6px #000",
-    };
-
-    const starAnimation = {
-      scale: isHovered ? 1.5 : [1, 1.15, 1],
-    };
     return (
       <motion.button
-        className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-1 focus:outline-none z-10"
-        style={{ left: `${surah.position.x}%`, top: `${surah.position.y}%` }}
+        className="absolute z-10 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-1 focus:outline-none contain-layout"
+        style={positionStyle}
         onClick={onClick}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        aria-label={` ${surah.englishNameTranslation} (${surah.name})`}
-        layout="position"
-        initial={{
-          opacity: 0,
-          scale: 0.6,
-        }}
-        animate={{
-          opacity: 1,
-          scale: 1,
-        }}
-        exit={{
-          opacity: 0,
-          scale: 0,
-        }}
-        transition={{
-          opacity: {
-            duration: 0.3,
-          },
-
-          scale: {
-            duration: 0.3,
-          },
-
-          layout: {
-            duration: 0.8,
-            type: "spring",
-            bounce: 0.25,
-          },
-        }}
-        whileHover={{
-          scale: 1.15,
-          zIndex: 20,
-        }}
-        whileTap={{
-          scale: 0.92,
-        }}
+        aria-label={`${surah.englishNameTranslation} (${surah.name})`}
+        initial='idle'
+        animate={STAR_ANIMATE}
+        exit={STAR_EXIT}
+        transition={STAR_ENTER_TRANSITION}
+        variants={BUTTON_VARIANTS}
+        whileHover={isMobile ? undefined : "hovered"}
+        whileTap={STAR_WHILE_TAP}
       >
-        {/* Outer nebula glow */}
+        {/* Glow — opacity driven by inherited "hovered" variant, no setState */}
         <motion.div
-          className="absolute  pointer-events-none"
+          className="pointer-events-none absolute"
           style={glowStyle}
-          
+          variants={GLOW_VARIANTS}
+          initial="idle"
+          animate="idle"
         />
 
-        {/* Star body */}
         <motion.div
-          className="relative rounded-full cursor-pointer"
+          className={`relative cursor-pointer rounded-full ${!isMobile ? " star-pulse" : ""}`}
           style={starStyle}
-          animate={starAnimation}
-          transition={{
-            scale: isHovered
-              ? { duration: 0.2 }
-              : {
-                  duration: 2 + (surah.number % 3) * 0.5,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                },
-            opacity: { duration: 0.4 },
-          }}
-          whileTap={{ scale: 0.9 }}
+          whileTap={INNER_WHILE_TAP}
         />
 
-        {/* Name label */}
+        {/* Label — visible when filtered, or when parent enters "hovered" variant */}
         <motion.span
-          className="absolute top-full mt-1 text-center leading-none pointer-events-none select-none whitespace-nowrap"
+          className="absolute top-full mt-1 select-none whitespace-nowrap text-center leading-none pointer-events-none"
           style={labelStyle}
-          animate={{
-            opacity: showLabel ? 1 : 0,
-            y: showLabel ? 0 : 4,
-          }}
-          transition={{ duration: 0.3 }}
+          variants={LABEL_VARIANTS}
+          initial="idle"
+          animate={isFilteredView ? "hovered" : "idle"}
+          transition={LABEL_TRANSITION}
         >
           {isArabic ? surah.shortName : surah.englishName}
         </motion.span>
       </motion.button>
     );
   },
+  (prev, next) =>
+    prev.surah === next.surah &&
+    prev.position === next.position &&
+    prev.isFilteredView === next.isFilteredView &&
+    prev.onClick === next.onClick &&
+    prev.isMobile === next.isMobile &&
+    prev.isArabic === next.isArabic,
 );
 
 Star.displayName = "Star";

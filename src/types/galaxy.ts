@@ -2,7 +2,6 @@ import { Surah } from "./surah";
 
 export type Point = { x: number; y: number };
 
-
 export type BgStar = {
   id: number;
   x: number; // left %
@@ -29,5 +28,7 @@ export type Theme = {
 
 export interface GalaxySurah extends Surah {
   color: string;
+}
+export interface GalaxySurahWithPosition extends GalaxySurah {
   position: Point;
 }

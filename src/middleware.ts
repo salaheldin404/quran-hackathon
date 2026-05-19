@@ -26,22 +26,22 @@ async function sign(data: string) {
     .replace(/\//g, "_")
     .replace(/=+$/, "");
 }
+
 async function verifySession(token?: string) {
   if (!token) return false;
 
   const [payload, sig] = token.split(".");
-  if (!payload || !sig) return false;
+
+  if (!payload || !sig) {
+    return false;
+  }
 
   const expected = await sign(payload);
-  if (sig !== expected) return false;
 
-  const data = JSON.parse(atob(payload));
-  if (data.exp < Date.now()) return false;
-
-  return true;
+  return sig === expected;
 }
 
-const PROTECTED_PATHS = ["/khatma", "/profile","/journey"];
+const PROTECTED_PATHS = ["/khatma", "/profile", "/journey"];
 const AUTH_PAGES = ["/auth/signin", "/auth/error"];
 export default async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -55,23 +55,22 @@ export default async function middleware(req: NextRequest) {
     pathWithoutLocale.startsWith(page),
   );
   const session = req.cookies.get("session")?.value;
-  const isValidSession = await verifySession(session);
+  const hasSession = await verifySession(session);
 
-  if (isAuthPage && isValidSession) {
+  if (isAuthPage && hasSession) {
     return NextResponse.redirect(new URL("/", req.url));
   }
   if (!isProtectedPath) {
     return intlMiddleware(req);
   }
 
-  if (!isValidSession) {
+  if (!hasSession) {
     const loginUrl = new URL(`/api/auth/login`, req.url);
     return NextResponse.redirect(loginUrl);
   }
 
   return intlMiddleware(req);
 }
-
 
 export const config = {
   matcher: "/((?!api|trpc|_next|_vercel|sitemap\\.xml|robots\\.txt|.*\\..*).*)",

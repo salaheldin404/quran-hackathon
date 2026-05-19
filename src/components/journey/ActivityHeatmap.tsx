@@ -154,7 +154,7 @@ export function ActivityHeatmap({ stats, yearSetting }: ActivityHeatmapProps) {
                         <div className="font-bold text-sm">{dateLabel}</div>
                         <div className="flex items-center gap-2 text-xs">
                           <span className="text-emerald-500 font-bold">
-                            📖 {t("pages", { count: dayData?.pages || 0 })}
+                            📖 {t("pages", { count: dayData?.pages.toFixed(0) || 0 })}
                           </span>
                           <span className="text-muted-foreground">•</span>
                           <span className="text-emerald-500 font-bold">

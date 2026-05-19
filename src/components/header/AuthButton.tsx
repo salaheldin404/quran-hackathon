@@ -16,23 +16,20 @@ import { useCallback } from "react";
 import { Link } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { UserRound } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 const AuthButton = () => {
   const { user, isAuthenticated } = useAppSelector((state) => state.sync);
   const dispatch = useAppDispatch();
   const locale = useLocale();
   const t = useTranslations("AuthButton");
-  const router = useRouter();
 
   const handleLogout = useCallback(async () => {
     cancelPendingSave();
     localStorage.removeItem("userSettings");
     dispatch(resetToDefaultState());
     
-    await fetch("/api/auth/logout");
-    router.push("/");
-  }, [dispatch, router]);
+    window.location.href = "/api/auth/logout";
+  }, [dispatch]);
 
   if (isAuthenticated && user) {
     const displayName = user.firstName || user.email || "User";

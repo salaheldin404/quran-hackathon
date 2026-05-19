@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { setSession, setUserIdInCookie } from "@/lib/oauth/session";
+import { setIdTokenCookie, setSession, setUserIdInCookie } from "@/lib/oauth/session";
 import { getQfOAuthConfig } from "@/lib/oauth/qf";
 import { encryptToken } from "@/lib/oauth/token-encryption";
 
@@ -142,8 +142,9 @@ export async function GET(req: NextRequest) {
     const user = await upsertUser(payload.sub!, tokenData, payload);
 
     // 5. Create session
-    await setSession( tokenData.access_token);
-    await setUserIdInCookie(user.id); 
+    await setSession(tokenData.access_token);
+    await setUserIdInCookie(user.id);
+    await setIdTokenCookie(tokenData.id_token);
     // 6. Redirect and clean up cookies
     const res = NextResponse.redirect(new URL("/", req.url));
     clearOAuthCookies(res);

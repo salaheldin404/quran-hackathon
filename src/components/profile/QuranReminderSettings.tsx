@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, type Dispatch, type SetStateAction } from "react";
+import { useMemo, useRef, useState, type Dispatch, type SetStateAction } from "react";
 import { BookOpen } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
@@ -46,6 +46,7 @@ export default function QuranReminderSettings({
   const t = useTranslations("ProfilePage");
   const locale = useLocale();
   const dir = locale === "ar" ? "rtl" : "ltr";
+  const headerRef = useRef<HTMLDivElement>(null);
   const [draftReminder, setDraftReminder] = useState<QuranReminderForm>(() =>
     createDefaultQuranReminder(),
   );
@@ -117,6 +118,9 @@ export default function QuranReminderSettings({
       days: sortDays(reminder.days),
     });
     setEditingReminderId(reminder.id ?? null);
+
+    // Scroll to the composer area
+    headerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   const handleRemoveReminder = (reminderId?: string) => {
@@ -147,7 +151,10 @@ export default function QuranReminderSettings({
 
   return (
     <Card className="pt-0 overflow-hidden rounded-[28px] border-white/70 bg-white/85 shadow-sm backdrop-blur dark:border-white/10 dark:bg-card/90">
-      <CardHeader className="py-6 border-b border-border/60 bg-gradient-to-r from-primary/10 via-white to-primary/5 dark:from-primary/10 dark:via-card dark:to-primary/5">
+      <CardHeader
+        ref={headerRef}
+        className="py-6 border-b border-border/60 bg-gradient-to-r from-primary/10 via-white to-primary/5 dark:from-primary/10 dark:via-card dark:to-primary/5"
+      >
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="space-y-1">
             <CardTitle className="flex items-center gap-2 text-xl">
