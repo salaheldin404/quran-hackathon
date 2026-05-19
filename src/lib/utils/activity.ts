@@ -203,6 +203,7 @@ function buildAchievements({
     },
   ];
 }
+
 export function calculateJourneyStats(
   activities: Activity[],
   currentStreak: number,
@@ -287,7 +288,7 @@ export function calculateJourneyStats(
     )
     .map(({ seconds, ...rest }) => ({
       ...rest,
-      minutes: Math.round(seconds / 60),
+      minutes: Math.floor(seconds / 60),
     }));
 
   const sortedDates = Array.from(activityDates)

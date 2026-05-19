@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { setIdTokenCookie, setSession, setUserIdInCookie } from "@/lib/oauth/session";
+import {
+  setIdTokenCookie,
+  setSession,
+  setUserIdInCookie,
+} from "@/lib/oauth/session";
 import { getQfOAuthConfig } from "@/lib/oauth/qf";
 import { encryptToken } from "@/lib/oauth/token-encryption";
 
@@ -111,10 +115,20 @@ async function exchangeCodeForTokens(
 
   return res.json() as Promise<TokenResponse>;
 }
-function clearOAuthCookies(res: NextResponse): void {
-  res.cookies.delete("pkce_verifier");
-  res.cookies.delete("oauth_state");
-  res.cookies.delete("oauth_nonce");
+function clearOAuthCookies(res: NextResponse): NextResponse {
+  const cookieOptions = {
+    path: "/",
+    maxAge: 0,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax" as const,
+  };
+
+  res.cookies.set("pkce_verifier", "", cookieOptions);
+  res.cookies.set("oauth_state", "", cookieOptions);
+  res.cookies.set("oauth_nonce", "", cookieOptions);
+
+  return res;
 }
 
 export async function GET(req: NextRequest) {
@@ -122,17 +136,24 @@ export async function GET(req: NextRequest) {
   const validated = validateCallbackRequest(req);
   if (!validated) {
     console.warn("[oauth/callback] Invalid or mismatched state/cookies");
-    return new NextResponse("Invalid auth request", { status: 400 });
+    return clearOAuthCookies(
+      new NextResponse("Invalid auth request", { status: 400 }),
+    );
   }
 
   const { code, cookies } = validated;
+  const res = NextResponse.redirect(new URL("/", req.url));
 
   try {
     // 2. Exchange code for tokens
     const tokenData = await exchangeCodeForTokens(code, cookies.codeVerifier);
 
     if (!tokenData.id_token) {
-      return new NextResponse("Missing ID token in response", { status: 502 });
+      return clearOAuthCookies(
+        new NextResponse("Missing ID token in response", {
+          status: 502,
+        }),
+      );
     }
 
     // 3. Validate id_token claims
@@ -146,19 +167,17 @@ export async function GET(req: NextRequest) {
     await setUserIdInCookie(user.id);
     await setIdTokenCookie(tokenData.id_token);
     // 6. Redirect and clean up cookies
-    const res = NextResponse.redirect(new URL("/", req.url));
-    clearOAuthCookies(res);
 
     return res;
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error";
-    console.error("[oauth/callback] Error:", message);
+    console.error("[oauth/callback] Error:", err);
 
-    // Distinguish security failures from upstream/infra failures
-    if (message.includes("nonce")) {
-      return new NextResponse("Invalid ID token", { status: 400 });
-    }
+    const status =
+      err instanceof Error && err.message.includes("nonce") ? 400 : 502;
 
-    return new NextResponse("Authentication failed", { status: 502 });
+    const message =
+      status === 400 ? "Invalid ID token" : "Authentication failed";
+
+    return clearOAuthCookies(new NextResponse(message, { status }));
   }
 }
