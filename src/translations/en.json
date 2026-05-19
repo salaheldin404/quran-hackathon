@@ -456,7 +456,8 @@
       "successToast": "Reminder settings saved successfully.",
       "error": "We couldn't save your reminder settings. Please try again.",
       "noQuranReminders": "No Quran reminders yet",
-      "summary": "Quran reminders: {quran}. Khatma reminder: {khatma}."
+      "summary": "Quran reminders: {quran}. Khatma reminder: {khatma}.",
+      "unsaved": "Unsaved changes"
     },
     "validation": {
       "quranTime": "Choose a time for the Quran reminder.",
