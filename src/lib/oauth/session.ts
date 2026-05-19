@@ -16,7 +16,7 @@ type VerifyOptions = {
   signFn: (payload: string) => string;
 };
 
- async function verifySignedCookie<T>({
+async function verifySignedCookie<T>({
   cookieName,
   signFn,
 }: VerifyOptions): Promise<T | null> {
@@ -137,4 +137,17 @@ export async function clearSession() {
   const cookieStore = await cookies();
   cookieStore.delete(SESSION_COOKIE_NAME);
   cookieStore.delete("userId");
+  cookieStore.delete("qf_id_token");
+}
+
+export async function setIdTokenCookie(idToken: string) {
+  const cookieStore = await cookies();
+
+  cookieStore.set("qf_id_token", idToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24, 
+  });
 }
