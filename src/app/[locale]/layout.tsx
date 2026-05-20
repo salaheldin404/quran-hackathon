@@ -51,7 +51,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = (await params) as { locale: "en" | "ar" };
-  const baseUrl = process.env.SITE_URL!
+  const baseUrl = process.env.SITE_URL!;
 
   const commonMetadata: Metadata = {
     metadataBase: new URL(baseUrl),
@@ -189,6 +189,7 @@ export default async function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        <meta name="google" content="notranslate" />
       </head>
       <body
         className={`${cairo.variable} ${tajawal.variable} dark:bg-background bg-gray-100`}
