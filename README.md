@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sakinah Streams
 
-## Getting Started
+Sakinah Streams is a modern Quran and Islamic companion platform designed to help users build a deeper and more consistent relationship with the Quran through immersive experiences, intelligent planning systems, and emotionally supportive AI-powered reflections.
 
-First, run the development server:
+The platform combines Quran engagement, habit-building, spiritual mindfulness, and beautiful interactive experiences into one unified ecosystem. 
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Core Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+* Intelligent Khatma Planner with adaptive daily goals
+* Interactive Quranic Galaxy exploration experience
+* Activity tracking and streak system
+* Gamified spiritual consistency features
+* Morning & Evening Athkar integration
+* Quran radio and reciter audio experience
+* Offline-first Progressive Web App (PWA)
+* Cross-device synchronization
+* Wishlist system for Surahs and reciters
+* Personalized Quran journey tracking
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## AI Reflection Companion
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The AI Reflection Companion helps users reconnect emotionally and spiritually with the Quran through supportive reflections based on their feelings and emotional state.
 
-## Learn More
+Users can:
 
-To learn more about Next.js, take a look at the following resources:
+* Select a mood or write a short reflection
+* Receive Quranic themes and authentic verse references
+* Get meaningful adhkar and gentle reminders
+* Experience calm and compassionate spiritual support
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+To preserve authenticity and safety:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+* The AI never generates Quran text directly
+* Quran verses are fetched from trusted Quran.com APIs
+* Adhkar are mapped from a verified internal database
+* The system avoids fatwas and harmful spiritual guidance
 
-## Deploy on Vercel
+The AI system includes:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+* Gemini + OpenRouter fallback architecture
+* Structured JSON parsing and validation
+* Server-side safety and sanitization layers
+* Cached and preset reflections for reliability and low-cost scaling
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Tech Stack
+
+* Next.js App Router
+* TypeScript
+* Prisma
+* PostgreSQL
+* Tailwind CSS
+* shadcn/ui
+* Gemini API
+* OpenRouter
+* Quran.com API
+* MP3Quran API
+* next-intl
+* Zod
+
+## Vision
+
+Sakinah Streams aims to transform Quran engagement into a peaceful, immersive, and emotionally meaningful daily experience by combining spirituality, technology, and thoughtful AI systems in one modern platform.
