@@ -508,10 +508,6 @@ export type ReminderUpdatedaysInput = {
   push?: number | number[]
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type ReminderCreateWithoutUserInput = {
   id?: string
   surahId: number

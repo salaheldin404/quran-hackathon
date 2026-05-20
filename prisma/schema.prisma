@@ -20,9 +20,40 @@ model User {
   reminders         Reminder[]
   khatmaReminders   KhatmaReminder[]
   completedKhatmas Int              @default(0)
+  emotionLogs       EmotionLog[]
+  aiUsages          AiUsage[]
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
 
+}
+
+model AiUsage {
+  id          String   @id @default(cuid())
+  userId      String
+  identifier  String   // IP address or user ID
+  provider    String
+  model       String
+  cached      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([identifier, createdAt])
+  @@index([userId, createdAt])
+}
+
+model EmotionLog {
+  id              String   @id @default(cuid())
+  userId          String
+  emotionTag      String   // e.g., 'anxious', 'sad', 'peaceful'
+  userInput       String?  // The text they typed (if any)
+  aiResponse      Json     // The generated response (verses, athkar, plan)
+  createdAt       DateTime @default(now())
+  
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([emotionTag])
 }
 
 model PushSubscription {
