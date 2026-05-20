@@ -28,7 +28,6 @@ async function getAccessToken(): Promise<string | null> {
   }
 
   const auth = Buffer.from(`${clientId}:${clientSecret}`).toString("base64");
-  
   try {
     const response = await fetch(tokenUrl, {
       method: "POST",
@@ -68,7 +67,6 @@ async function handler(
   const { slug } = await params;
   const apiPath = slug.join("/");
   const { clientId } = getQfOAuthConfig();
-
   const accessToken = await getAccessToken();
   if (!accessToken) {
     return NextResponse.json(

@@ -385,6 +385,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   User: 'User',
+  AiUsage: 'AiUsage',
+  EmotionLog: 'EmotionLog',
   PushSubscription: 'PushSubscription',
   Reminder: 'Reminder',
   KhatmaReminder: 'KhatmaReminder',
@@ -408,7 +410,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "pushSubscription" | "reminder" | "khatmaReminder" | "userSettings" | "wishlistSurah" | "wishlistReciter" | "playHistory" | "khatmaPlan"
+    modelProps: "user" | "aiUsage" | "emotionLog" | "pushSubscription" | "reminder" | "khatmaReminder" | "userSettings" | "wishlistSurah" | "wishlistReciter" | "playHistory" | "khatmaPlan"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -483,6 +485,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.UserCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.UserCountAggregateOutputType> | number
+        }
+      }
+    }
+    AiUsage: {
+      payload: Prisma.$AiUsagePayload<ExtArgs>
+      fields: Prisma.AiUsageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AiUsageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiUsagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AiUsageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiUsagePayload>
+        }
+        findFirst: {
+          args: Prisma.AiUsageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiUsagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AiUsageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiUsagePayload>
+        }
+        findMany: {
+          args: Prisma.AiUsageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiUsagePayload>[]
+        }
+        create: {
+          args: Prisma.AiUsageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiUsagePayload>
+        }
+        createMany: {
+          args: Prisma.AiUsageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AiUsageCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiUsagePayload>[]
+        }
+        delete: {
+          args: Prisma.AiUsageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiUsagePayload>
+        }
+        update: {
+          args: Prisma.AiUsageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiUsagePayload>
+        }
+        deleteMany: {
+          args: Prisma.AiUsageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AiUsageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AiUsageUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiUsagePayload>[]
+        }
+        upsert: {
+          args: Prisma.AiUsageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AiUsagePayload>
+        }
+        aggregate: {
+          args: Prisma.AiUsageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAiUsage>
+        }
+        groupBy: {
+          args: Prisma.AiUsageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AiUsageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AiUsageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AiUsageCountAggregateOutputType> | number
+        }
+      }
+    }
+    EmotionLog: {
+      payload: Prisma.$EmotionLogPayload<ExtArgs>
+      fields: Prisma.EmotionLogFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EmotionLogFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmotionLogPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EmotionLogFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmotionLogPayload>
+        }
+        findFirst: {
+          args: Prisma.EmotionLogFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmotionLogPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EmotionLogFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmotionLogPayload>
+        }
+        findMany: {
+          args: Prisma.EmotionLogFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmotionLogPayload>[]
+        }
+        create: {
+          args: Prisma.EmotionLogCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmotionLogPayload>
+        }
+        createMany: {
+          args: Prisma.EmotionLogCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EmotionLogCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmotionLogPayload>[]
+        }
+        delete: {
+          args: Prisma.EmotionLogDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmotionLogPayload>
+        }
+        update: {
+          args: Prisma.EmotionLogUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmotionLogPayload>
+        }
+        deleteMany: {
+          args: Prisma.EmotionLogDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EmotionLogUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EmotionLogUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmotionLogPayload>[]
+        }
+        upsert: {
+          args: Prisma.EmotionLogUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmotionLogPayload>
+        }
+        aggregate: {
+          args: Prisma.EmotionLogAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEmotionLog>
+        }
+        groupBy: {
+          args: Prisma.EmotionLogGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmotionLogGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EmotionLogCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmotionLogCountAggregateOutputType> | number
         }
       }
     }
@@ -1132,6 +1282,31 @@ export const UserScalarFieldEnum = {
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+export const AiUsageScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  identifier: 'identifier',
+  provider: 'provider',
+  model: 'model',
+  cached: 'cached',
+  createdAt: 'createdAt'
+} as const
+
+export type AiUsageScalarFieldEnum = (typeof AiUsageScalarFieldEnum)[keyof typeof AiUsageScalarFieldEnum]
+
+
+export const EmotionLogScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  emotionTag: 'emotionTag',
+  userInput: 'userInput',
+  aiResponse: 'aiResponse',
+  createdAt: 'createdAt'
+} as const
+
+export type EmotionLogScalarFieldEnum = (typeof EmotionLogScalarFieldEnum)[keyof typeof EmotionLogScalarFieldEnum]
+
+
 export const PushSubscriptionScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -1382,20 +1557,6 @@ export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 
 
 /**
- * Reference to a field of type 'Float'
- */
-export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
-    
-
-
-/**
- * Reference to a field of type 'Float[]'
- */
-export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
-    
-
-
-/**
  * Reference to a field of type 'Json'
  */
 export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
@@ -1406,6 +1567,20 @@ export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'J
  * Reference to a field of type 'QueryMode'
  */
 export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
+ * Reference to a field of type 'Float'
+ */
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+/**
+ * Reference to a field of type 'Float[]'
+ */
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
 /**
@@ -1504,6 +1679,8 @@ export type PrismaClientOptions = ({
 }
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
+  aiUsage?: Prisma.AiUsageOmit
+  emotionLog?: Prisma.EmotionLogOmit
   pushSubscription?: Prisma.PushSubscriptionOmit
   reminder?: Prisma.ReminderOmit
   khatmaReminder?: Prisma.KhatmaReminderOmit

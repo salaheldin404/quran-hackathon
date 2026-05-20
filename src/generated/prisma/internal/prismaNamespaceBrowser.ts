@@ -52,6 +52,8 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
+  AiUsage: 'AiUsage',
+  EmotionLog: 'EmotionLog',
   PushSubscription: 'PushSubscription',
   Reminder: 'Reminder',
   KhatmaReminder: 'KhatmaReminder',
@@ -91,6 +93,31 @@ export const UserScalarFieldEnum = {
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const AiUsageScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  identifier: 'identifier',
+  provider: 'provider',
+  model: 'model',
+  cached: 'cached',
+  createdAt: 'createdAt'
+} as const
+
+export type AiUsageScalarFieldEnum = (typeof AiUsageScalarFieldEnum)[keyof typeof AiUsageScalarFieldEnum]
+
+
+export const EmotionLogScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  emotionTag: 'emotionTag',
+  userInput: 'userInput',
+  aiResponse: 'aiResponse',
+  createdAt: 'createdAt'
+} as const
+
+export type EmotionLogScalarFieldEnum = (typeof EmotionLogScalarFieldEnum)[keyof typeof EmotionLogScalarFieldEnum]
 
 
 export const PushSubscriptionScalarFieldEnum = {

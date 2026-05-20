@@ -9,6 +9,8 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/User'
+export type * from './models/AiUsage'
+export type * from './models/EmotionLog'
 export type * from './models/PushSubscription'
 export type * from './models/Reminder'
 export type * from './models/KhatmaReminder'

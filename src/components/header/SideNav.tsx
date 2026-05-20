@@ -18,7 +18,7 @@ import { FaHeart } from "react-icons/fa";
 import { Link, usePathname } from "@/i18n/navigation";
 import { FaRadio } from "react-icons/fa6";
 import { GiSoundWaves } from "react-icons/gi";
-import { BookOpen, UserRound } from "lucide-react";
+import { BookOpen, UserRound, Sparkles } from "lucide-react";
 import { GiJourney } from "react-icons/gi";
 
 import { useEffect, useState } from "react";
@@ -36,6 +36,11 @@ const LINKS = [
     title: "profile",
     href: "/profile",
     icon: UserRound,
+  },
+  {
+    title: "reflection",
+    href: "/reflection",
+    icon: Sparkles,
   },
   {
     title: "journey",

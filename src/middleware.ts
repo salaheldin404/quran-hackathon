@@ -41,7 +41,7 @@ async function verifySession(token?: string) {
   return sig === expected;
 }
 
-const PROTECTED_PATHS = ["/khatma", "/profile", "/journey"];
+const PROTECTED_PATHS = ["/khatma", "/profile", "/journey","/reflection"];
 const AUTH_PAGES = ["/auth/signin", "/auth/error"];
 export default async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
