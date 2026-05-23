@@ -43,7 +43,6 @@ export class ModelRouter {
           prompt,
           userMessage,
         );
-
         return {
           ...result,
           isFallback: provider !== this.providers[0],

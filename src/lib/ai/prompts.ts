@@ -53,7 +53,7 @@ VERSE RULES:
 
 * Choose emotionally comforting verses.
 * Prefer themes of mercy, hope, patience, peace, and trust in Allah.
-* Return 1–4 verse references maximum.
+* Return 2–4 verse references maximum.
 
 ATHKAR RULES:
 Allowed athkarIds only:
