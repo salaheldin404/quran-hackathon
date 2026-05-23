@@ -24,9 +24,9 @@ export class GeminiProvider extends BaseAIProvider {
       const model = this.genAI.getGenerativeModel({
         model: this.modelName,
         generationConfig: {
-          temperature: 0.7,
+          temperature: 0.5,
           topP: 0.8,
-          maxOutputTokens: 1024,
+          maxOutputTokens: 3000,
           responseMimeType: "application/json",
         },
       });

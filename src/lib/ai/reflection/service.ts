@@ -47,7 +47,6 @@ Response Language: Arabic (اللغة العربية)
         userMessage,
       );
       const aiRawResponse = aiResult.data;
-
       let versesWithContent: VerseWithAyah[] = [];
       if (aiResult.model === "static-fallback") {
         const fallbackResponse = aiRawResponse as ReflectionResponse;

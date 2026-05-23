@@ -30,9 +30,6 @@ export class AIUsageTracker {
       now.getTime() - lastUsage.createdAt.getTime() <
         limits.cooldownSeconds * 1000
     ) {
-      console.warn(
-        `[AI_COOLDOWN] Request blocked for ${identifier}. Active cooldown.`,
-      );
       const count = await this.getCount(identifier, userId, todayStart);
       return {
         canGenerate: false,
@@ -45,12 +42,6 @@ export class AIUsageTracker {
 
     // 2. Daily Limit Check
     const count = await this.getCount(identifier, userId, todayStart);
-
-    if (count >= limits.daily) {
-      console.warn(
-        `[AI_LIMIT] User exceeded daily quota for ${identifier} (${count}/${limits.daily})`,
-      );
-    }
 
     return {
       canGenerate: count < limits.daily,
@@ -93,12 +84,6 @@ export class AIUsageTracker {
           cached,
         },
       });
-
-      if (!cached) {
-        console.info(
-          `[AI_USAGE] ${provider} (${model}) generation recorded for ${identifier}`,
-        );
-      }
     } catch (error) {
       console.error("[AI_USAGE_TRACK_ERROR] Failed to record AI usage:", error);
     }

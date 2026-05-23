@@ -26,7 +26,6 @@ export async function fetchVerseContent(
 
   if (!res.ok) throw new Error(`Failed to fetch verse ${verseKey}`);
   const data = await res.json();
-  console.log(data, `[QF_API_DEBUG] Fetched verse ${verseKey} from QF API.`);
   const verse = data.verse;
   return {
     text: verse.text_qpc_hafs || verse.text_uthmani,

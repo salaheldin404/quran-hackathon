@@ -10,20 +10,18 @@ function isUnauthorizedError(error: unknown): boolean {
   return error instanceof Error && error.message === "Unauthorized";
 }
 
-
 export async function POST(request: Request) {
   const t = await getTranslations("reflection");
 
   try {
     const user = await requireUser();
     const userId = user.id;
-    const userType = "authenticated"; 
+    const userType = "authenticated";
 
     const identifier = userId;
 
     const body = await request.json();
     const validatedData = ReflectionRequestSchema.parse(body);
-
     const result = await ReflectionService.generate(
       validatedData,
       userId,
@@ -43,9 +41,6 @@ export async function POST(request: Request) {
         { status: 429 },
       );
     }
-
-    // 5. Structured Error Handling
-    console.error("[REFLECTION_API_ERROR]", error);
 
     if (error instanceof ZodError) {
       return NextResponse.json(
