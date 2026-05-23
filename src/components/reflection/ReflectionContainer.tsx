@@ -11,10 +11,14 @@ import { toast } from "sonner";
 
 export default function ReflectionContainer() {
   const [step, setStep] = useState<"input" | "loading" | "results">("input");
-  const [reflectionData, setReflectionData] = useState<ReflectionResponse | null>(null);
+  const [reflectionData, setReflectionData] =
+    useState<ReflectionResponse | null>(null);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  const handleSubmit = async (data: { userInput?: string; emotionTag?: EmotionTag }) => {
+  const handleSubmit = async (data: {
+    userInput?: string;
+    emotionTag?: EmotionTag;
+  }) => {
     setStep("loading");
     try {
       const response = await fetch("/api/ai/reflection", {
@@ -22,16 +26,22 @@ export default function ReflectionContainer() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-
-      if (!response.ok) throw new Error("Failed to fetch reflection");
-
       const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          result.error || "Failed to generate reflection. Please try again.",
+        );
+      }
+
       setReflectionData(result);
       setStep("results");
-      setRefreshTrigger(prev => prev + 1);
+      setRefreshTrigger((prev) => prev + 1);
     } catch (error) {
       console.error(error);
-      toast.error("Something went wrong. Please try again.");
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
       setStep("input");
     }
   };
@@ -58,7 +68,10 @@ export default function ReflectionContainer() {
             className="space-y-12"
           >
             <EmotionInput onSubmit={handleSubmit} isLoading={false} />
-            <ReflectionHistory onSelect={handleSelectFromHistory} refreshTrigger={refreshTrigger} />
+            <ReflectionHistory
+              onSelect={handleSelectFromHistory}
+              refreshTrigger={refreshTrigger}
+            />
           </motion.div>
         )}
 
